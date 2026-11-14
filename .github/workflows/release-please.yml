@@ -14,6 +14,6 @@ jobs:
     steps:
       # Conventional commits (feat:, fix:, ...) on main open a release PR that
       # bumps package.json and CHANGELOG.md; merging it tags and publishes the release.
-      - uses: googleapis/release-please-action@v4
+      - uses: googleapis/release-please-action@v5
         with:
           release-type: node
