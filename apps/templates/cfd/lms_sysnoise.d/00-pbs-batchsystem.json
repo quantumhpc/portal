@@ -1,0 +1,10 @@
+{
+    "parameters": {
+        "default"   : {
+            "defaultOps+"   :   "-resource_manager pbspro -hf mpiConfigFile"
+        },
+        "prologueCommands+": [
+            "echo \"-machinefile ${PBS_NODEFILE} -n VAR.numProcs -envall -wdir \\\"$PBS_O_WORKDIR\\\" \\\"VAR.appBinaries\\\" (-if \\\"$PBS_O_WORKDIR/VAR.inputFileName\\\") (-of \\\"$PBS_O_WORKDIR/VAR.outputFile\\\")\" > mpiConfigFile"
+        ]
+    }
+}

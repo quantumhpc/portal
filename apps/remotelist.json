@@ -1,0 +1,30 @@
+{
+    "turbovnc": {
+        "ext": "vnc",
+        "start": [
+            "vnc/web_auth",
+            "turbovnc_starter"
+        ],
+        "connect": "vnc/connect",
+        "clean": "vnc/cleaner"
+    },
+    "tigervnc": {
+        "ext": "vnc",
+        "start": [
+            "vnc/web_auth",
+            "tigervnc_starter"
+        ],
+        "connect": "vnc/connect",
+        "clean": "vnc/cleaner"
+    },
+    "virtualgl": {
+        "ext": "vnc",
+        "start": [
+            "vnc/web_auth",
+            "virtualgl_wrapper",
+            "turbovnc_starter"
+        ],
+        "connect": "vnc/connect",
+        "clean": "vnc/cleaner"
+    }
+}

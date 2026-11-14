@@ -1,0 +1,21 @@
+{
+    "fields": {
+        "batchInt": {
+            "type"              :  "checkbox",
+            "label"             :  "Interactive mode",
+            "caption"           :  "Run a script with the GUI and exit",
+            "value": {
+                "true"          :   "-X",
+                "false"         :   ""
+            },
+            "required"          :  false
+        }
+    },
+    "parameters": {
+        "mainCommand+" : "VAR.batchInt",
+        "default"   : {
+            "batchInt"          :   "-X",
+            "inputFileSource"   :   "write"
+        }
+    }
+}

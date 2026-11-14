@@ -1,0 +1,28 @@
+# QuantumHPC Portal — WebSocket-to-VNC proxy for browser remote desktops
+# Copy to /etc/systemd/system/qhpc-websockify.service. See docs/remote-desktop.md.
+#
+# Routes each session token to the compute node's VNC port using the token
+# files the portal writes. Listens on localhost only: nginx (/vnc-ws) checks the
+# user's session with the portal before forwarding.
+[Unit]
+Description=QuantumHPC Portal remote-desktop proxy (websockify)
+Documentation=https://github.com/quantumhpc/portal/blob/main/docs/remote-desktop.md
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=qhpc-vnc
+Group=qhpc-vnc
+ExecStart=/usr/bin/websockify --token-plugin TokenFile --token-source /var/lib/qhpc-portal/tmp/vnc-tokens 127.0.0.1:6080
+Restart=on-failure
+RestartSec=5
+
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadOnlyPaths=/var/lib/qhpc-portal/tmp/vnc-tokens
+
+[Install]
+WantedBy=multi-user.target

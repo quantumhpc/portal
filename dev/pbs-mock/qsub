@@ -1,0 +1,43 @@
+#!/usr/bin/env node
+import fs from "node:fs";
+import path from "node:path";
+import { loadScenario, nextJobId, writeJob, host, currentUser, ensureSeeded } from "../mock-bin/lib.mjs";
+
+const scenario = loadScenario();
+ensureSeeded("pbs", scenario);
+
+const args = process.argv.slice(2);
+const script = args[args.length - 1];
+if (!script) {
+  process.stderr.write("qsub: please submit a script\n");
+  process.exit(1);
+}
+
+let jobName = `mockjob`;
+let queue = scenario.queues?.find(q => q.default)?.name || "main";
+let workdir = process.cwd();
+if (fs.existsSync(script)) {
+  workdir = path.dirname(path.resolve(script));
+  const text = fs.readFileSync(script, "utf-8");
+  const nameMatch = text.match(/^#PBS\s+-N\s+(\S+)/m);
+  if (nameMatch) jobName = nameMatch[1];
+  const queueMatch = text.match(/^#PBS\s+-q\s+(\S+)/m);
+  if (queueMatch) queue = queueMatch[1];
+}
+
+const id = nextJobId("pbs");
+const fullId = `${id}.${host(scenario)}`;
+writeJob("pbs", {
+  id,
+  fullId,
+  name: jobName,
+  user: currentUser(),
+  state: "R",
+  queue,
+  partition: queue,
+  startTime: new Date().toISOString(),
+  workdir,
+  script,
+});
+
+process.stdout.write(fullId + "\n");

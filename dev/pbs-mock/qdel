@@ -1,0 +1,9 @@
+#!/usr/bin/env node
+import { deleteJob } from "../mock-bin/lib.mjs";
+
+const id = String(process.argv[2] || "").split(".")[0];
+if (!id) {
+  process.stderr.write("qdel: no job id\n");
+  process.exit(1);
+}
+deleteJob("pbs", id);

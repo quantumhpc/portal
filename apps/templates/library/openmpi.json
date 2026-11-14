@@ -1,0 +1,23 @@
+{
+    "fields": {
+    },
+    "parameters": {
+        "appBinaries": {
+            "2.1.6": "mpirun",
+            "3.1.6": "mpirun",
+            "4.0.4": "mpirun"
+        },
+        "mainCommand": "VAR.appBinaries VAR.defaultOps (\"VAR.inputFileName\") ",
+        "default"   : {
+            "defaultOps"    :   "",
+            "useinputFile"  :   false,
+            "outputFile"    :   "output.log"
+        },
+        "prologueCommands": [
+            "module load openmpi/VAR.appVersion"    
+        ],
+        "options":{
+            "allowWriteScript"  : true
+        }
+    }
+}

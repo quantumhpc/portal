@@ -1,0 +1,38 @@
+rlmutil v15.1
+Copyright (C) 2006-2023, Reprise Software, Inc. All rights reserved.
+
+	rlm status on licsrv-vlab (port 5053), up 12d 03:44:18
+	rlm software version v15.1 (build:2)
+
+	-------------------
+	ISV vlabd status on licsrv-vlab (port 50531), up 12d 03:44:10
+	-------------------
+
+	vlabd software version v15.1 (build: 2)
+	License files:
+	   /opt/SIMULIA/License/license.dat
+
+	-------------------
+	ISV vlabd license pool status on licsrv-vlab (port 50531)
+	-------------------
+
+    vlmotion v25.0
+        count: 40, # reservations: 0, inuse: 8, exp: permanent
+        obsolete: 0, min_remove: 120, total checkouts: 153
+
+    vlacoustics v25.0
+        count: 16, # reservations: 0, inuse: 14, exp: permanent
+        obsolete: 0, min_remove: 120, total checkouts: 87
+
+    vldurability v25.0
+        count: 8, # reservations: 0, inuse: 0, exp: permanent
+        obsolete: 0, min_remove: 120, total checkouts: 21
+
+	-------------------
+	ISV vlabd usage status on licsrv-vlab (port 50531)
+	-------------------
+
+    vlmotion v25.0: jdoe@node12 1/0 at 05/26 09:30
+    vlmotion v25.0: asmith@node07 1/0 at 05/26 09:34
+    vlacoustics v25.0: bwayne@node33 2/0 at 05/26 08:58
+    vlacoustics v25.0: ckent@node34 1/0 at 05/26 09:02

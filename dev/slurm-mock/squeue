@@ -1,0 +1,43 @@
+#!/usr/bin/env node
+// Mock squeue --format=%all [-p partition] [-j jobid] [-u user]
+import { loadScenario, listJobs, deleteJob, isExpired, ensureSeeded, elapsedHms, slurmJsonArg, slurmJsonEnvelope, slurmJobJson } from "../mock-bin/lib.mjs";
+
+const scenario = loadScenario();
+ensureSeeded("slurm", scenario);
+
+const { json, args } = slurmJsonArg("squeue");
+let partFilter = null;
+let jobFilter = null;
+let userFilter = null;
+for (let i = 0; i < args.length; i++) {
+  if (args[i] === "-p") partFilter = args[i + 1];
+  if (args[i] === "-j") jobFilter = String(args[i + 1]);
+  if (args[i] === "-u") userFilter = args[i + 1];
+}
+
+const reasonOf = (j) => (j.held ? "JobHeldUser" : (j.state === "PENDING" ? "Resources" : "None"));
+if (json) {
+  const jobs = listJobs("slurm").filter(j => !isExpired(j)
+    && (!partFilter || j.partition === partFilter)
+    && (!jobFilter || String(j.id) === jobFilter)
+    && (!userFilter || j.user === userFilter));
+  process.stdout.write(slurmJsonEnvelope("jobs", jobs.map(j => slurmJobJson(j, reasonOf(j)))));
+  process.exit(0);
+}
+
+const header = "JOBID|NAME|USER|STATE|PARTITION|REASON|TIME|TIME_LIMIT|PRIORITY|WORK_DIR|NODES|NODELIST(REASON)|CPUS";
+const rows = [];
+for (const j of listJobs("slurm")) {
+  if (isExpired(j)) { deleteJob("slurm", j.id); continue; }
+  if (partFilter && j.partition !== partFilter) continue;
+  if (jobFilter && String(j.id) !== jobFilter) continue;
+  if (userFilter && j.user !== userFilter) continue;
+  const reason = j.held ? "JobHeldUser" : (j.state === "PENDING" ? "Resources" : "None");
+  const nodelist = j.state === "PENDING" ? "(None)" : "compute01";
+  rows.push([
+    j.id, j.name, j.user, j.state, j.partition, reason,
+    elapsedHms(j.startTime), j.timelimit || "01:00:00", j.held ? 0 : (j.priority ?? 100),
+    j.workdir, 1, nodelist, 4
+  ].join("|"));
+}
+process.stdout.write([header, ...rows, ""].join("\n"));

@@ -1,0 +1,14 @@
+{
+    "parameters": {
+        "mainCommand+" : "(VAR.dmp ? hosts=$PBS_NODEFILE : )",
+        "default"   : {
+            "defaultOps+"     :   "sdir=$PBS_O_WORKDIR/tmp"
+        },
+        "prologueCommands+": [
+            "mkdir ./tmp"
+        ],
+        "postCommands": [
+            "rm -rf ./tmp"
+        ]
+    }
+}

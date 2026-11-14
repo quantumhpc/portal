@@ -1,0 +1,41 @@
+// Portal config for the dev Slurm cluster (docker-compose.slurm.yml).
+// Copied to /etc/qhpc-portal on the portal container's first start; edit it
+// there (or in Admin → Configuration). Settings in the compose file's
+// `environment` (USE_PAM, ADMIN_USERS, HPC_MANAGER, DB_*) take precedence.
+{
+  "use_pam": true,
+  "pam_module": "qhpc-portal",
+  "admin_users": ["alice"],
+  "manager": "slurm",
+
+  "managers": {
+    "slurm": {
+      "method":      "local",
+      "binariesDir": "/usr/bin/",
+      "localShell":  "/bin/bash",
+      "localCopy":   "/bin/cp",
+      // Job folders: /scratch/<id>, a volume shared with every compute node.
+      "workingDir":  "/scratch",
+      "sharedDir":   "/scratch",
+      // Job folders are created mode 700, so other users can't read them.
+      "permissions": "700",
+      "userParams":  ["username", "uid", "gid"]
+    }
+  },
+
+  "remote": "turbovnc",
+  "remote_security": "none",
+
+  // Mock license-server outputs from the repo (paths relative to /app).
+  "lic_servers": {
+    "ansys":    { "type": "flexlm", "url": ["test", "./dev/lic-mock/flex/ansys.output"] },
+    "cdadapco": { "type": "flexlm", "url": ["test", "./dev/lic-mock/flex/star.output"] }
+  },
+
+  "tmpdir": "/var/lib/qhpc/tmp",
+
+  "db": {
+    "driver": "sqlite",
+    "file":   "/var/lib/qhpc/qhpc.sqlite"
+  }
+}

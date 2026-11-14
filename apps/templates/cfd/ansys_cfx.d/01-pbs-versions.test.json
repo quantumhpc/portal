@@ -1,0 +1,8 @@
+{
+    "parameters": {
+        "appBinaries": {
+            "v172": "/ansys_inc/v172/CFX/bin/cfx5solve",
+            "v180": "/ansys_inc/v180/CFX/bin/cfx5solve"
+        }
+    }
+}

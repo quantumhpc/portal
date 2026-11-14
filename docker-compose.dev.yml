@@ -1,0 +1,35 @@
+# Dev compose: SSH-reachable mock HPC head node, plus optional MongoDB.
+# Pair with `dev/start-dev.sh --mode ssh`.
+#
+#   docker compose -f docker-compose.dev.yml up -d hpc-mock
+#   docker compose -f docker-compose.dev.yml --profile mongo up -d
+services:
+  hpc-mock:
+    build:
+      context: .
+      dockerfile: dev/docker/hpc-mock/Dockerfile
+    image: qhpc/hpc-mock:dev
+    container_name: qhpc-hpc-mock
+    ports:
+      - "2222:22"
+    volumes:
+      # Public key baked from dev/keys/id_rsa.pub by start-dev.sh.
+      - ./dev/keys/authorized_keys:/home/hpcuser/.ssh/authorized_keys:ro
+      # Persist mock job state across container restarts.
+      - qhpc-mock-state:/tmp/qhpc-mock
+    restart: unless-stopped
+
+  mongo:
+    image: mongo:7
+    container_name: qhpc-mongo
+    profiles: ["mongo"]
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: quanta
+    volumes:
+      - qhpc-mongo-data:/data/db
+
+volumes:
+  qhpc-mock-state:
+  qhpc-mongo-data:

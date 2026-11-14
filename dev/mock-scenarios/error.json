@@ -1,0 +1,26 @@
+{
+  "name": "error",
+  "description": "Every node DOWN. Tests degraded-cluster UIs.",
+  "host": "mockhost",
+  "nodes": [
+    {
+      "name": "compute01",
+      "state": { "slurm": "DOWN", "pbs": "down" },
+      "cpuTotal": 8, "cpuAlloc": 0, "memTotalMb": 64000, "memFreeMb": 0, "memAllocMb": 0,
+      "partitions": ["main"], "gpus": []
+    },
+    {
+      "name": "compute02",
+      "state": { "slurm": "DRAIN", "pbs": "offline" },
+      "cpuTotal": 8, "cpuAlloc": 0, "memTotalMb": 64000, "memFreeMb": 0, "memAllocMb": 0,
+      "partitions": ["main"], "gpus": []
+    }
+  ],
+  "queues": [
+    { "name": "main", "default": true, "maxTime": "1-00:00:00", "totalCpus": 16, "totalNodes": 2 }
+  ],
+  "licenseServers": [],
+  "preSeededJobs": [
+    { "name": "failed_job_1", "user": "alice", "queue": "main", "state": "FAILED", "elapsedSec": 300 }
+  ]
+}

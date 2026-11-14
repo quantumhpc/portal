@@ -1,0 +1,96 @@
+{
+    "fields": {
+        "mpi": {
+            "type": "radioButtons",
+            "label":  "MPI Mode",
+            "radios": {
+                "platformmpi":{
+                    "caption"   :  "IBM Platform-MPI",
+                    "value"     :  "pl"
+                },
+                "intelmpi":{
+                    "caption"   :  "Intel MPI",
+                    "value"     :  "i"
+                }
+            },
+            "required"          :  true
+        },
+        "decomposition": {
+            "type": "radioButtons",
+            "label":  "Decomposition Mode",
+            "radios": {
+                "smp":{
+                    "caption"   :  "Load Decomposition Method",
+                    "value"     : "-ldm"
+                },
+                "dmp":{
+                    "caption"   :  "Domain Decomposition Mode",
+                    "value"     : "-ddm"
+                }
+            },
+            "required"          :  true
+        },
+        "runmode": {
+            "type"              : "radioButtons",
+            "label"             :  "Special mode",
+            "radios": {
+                "normal":{
+                    "caption"   :  "Normal mode",
+                    "value"     :  " "
+                },
+                "analysis":{
+                    "caption"   :  "Analysis Mode with data check",
+                    "value"     :  "-analysis"
+                },
+                "analysisskip":{
+                    "caption"   :  "Analysis Mode and skip data check",
+                    "value"     :  "-analysis -optskip"
+                },
+                "check":{
+                    "caption"   :  "Check Mode",
+                    "value"     :  "-check"
+                },
+                "restart":{
+                    "caption"   :  "Restart Mode",
+                    "value"     :  "-restart"
+                },
+                "optskip":{
+                    "caption"   :  "Skip optimization",
+                    "value"     :  "-optskip"
+                }
+            },
+            "required"          :  true
+        },
+        "licwait": {
+            "type"              : "textField",
+            "label"             :  "Wait for a licence",
+            "caption"           :  "Wait for the specified number of hours",
+            "pattern"           :  "[0-9]+",
+            "checkbox"          :  true,
+            "required"          :  false
+        }
+    },
+    "parameters": {
+        "appBinaries": {
+            "detect": "opti"
+        },
+        "mainCommand": "VAR.appBinaries (\"VAR.inputFileName\") VAR.defaultOps VAR.decomposition -np VAR.numProcs (-nt VAR.numThreads) -mpi VAR.mpi VAR.runmode (-licwait VAR.licwait) (-outfile VAR.outputFile)",
+        "default"   : {
+            "defaultOps"    :   "",
+            "mpi"           :   "pl",
+            "decomposition" :   "-ldm",
+            "runmode"       :   " ",
+            "licwait"       :   12,
+            "outputFile"    :   "output"
+        },
+        "prologueCommands": [],
+        "options":{
+            "allowWriteScript"  : false,
+            "hybridMPI"         : true
+        }
+    },
+    "force": {
+        "histFile"      :   "VAR.outputFile.hist",
+        "outputFile"    :   "VAR.outputFile.out"
+    }
+}

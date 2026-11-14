@@ -1,0 +1,71 @@
+{
+    "fields": {
+        "distributed": {
+            "type": "radioButtons",
+            "label":  "Distributed",
+            "radios": {
+                "smp":{
+                    "caption"   :  "SMP",
+                    "value"     :  "false"
+                },
+                "dmp":{
+                    "caption"   :  "DMP",
+                    "value"     :  "true"
+                }
+            },
+            "clear"             :  "mpi",
+            "required"          :  true
+        },
+        "mpi": {
+            "type": "radioButtons",
+            "label":  "MPI Mode",
+            "radios": {
+                "intelmpi":{
+                    "caption"   :  "Intel MPI",
+                    "value"     :  "intelmpi"
+                },
+                "ibmmpi":{
+                    "caption"   :  "IBM MPI",
+                    "value"     :  "ibmmpi"
+                },
+                "platformmpi":{
+                    "caption"   :  "Platform MPI (<v180)",
+                    "value"     :  "pcmpi"
+                }
+            },
+            "disabled"          :  "distributed='false'",
+            "required"          :  "distributed='true'"
+        },
+        "dp": {
+            "type"              : "checkbox",
+            "label"             :  "Double Precision",
+            "caption"           :  "Use the double precision solver",
+            "value": {
+                "true"          :   "-dp",
+                "false"         :   ""
+            },
+            "required"          :  false
+        },
+        "iff": {
+            "type"              : "checkbox",
+            "label"             :  "Forces",
+            "caption"           :  "Write Interface Force File",
+            "value": {
+                "true"          :   "input.intfor",
+                "false"         :   ""
+            },
+            "required"          :  false
+        }
+    },
+    "parameters": {
+        "mainCommand": "VAR.appBinaries VAR.defaultOps VAR.dp (VAR.distributed ? -dis -mpi VAR.mpi -machines $machines : PARA=1 NCPU=VAR.numProcs) (I=\"VAR.inputFileName\") (S=VAR.iff) (O=VAR.outputFile)",
+        "default"   : {
+            "defaultOps"    :   "x=70 MEMORY=1000M",
+            "dp"            :   "-dp",
+            "distributed"   :   "true",
+            "mpi"           :   "intelmpi",
+            "outputFile"    :   "solve.out"
+        },
+        "prologueCommands": []
+    }
+}

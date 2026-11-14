@@ -1,0 +1,28 @@
+lmutil - Copyright (c) 1989-2023 Flexera. All Rights Reserved.
+Flexible License Manager status on Mon 5/26/2026 09:43
+
+License server status: 1999@licsrv-star
+    License file(s) on licsrv-star: /opt/CD-adapco/license/license.dat:
+
+   licsrv-star: license server UP (MASTER) v11.19.0
+
+Vendor daemon status (on licsrv-star):
+
+  cdlmd: UP v11.19.0
+
+Feature usage info:
+
+Users of ccmpsuite:  (Total of 100 licenses issued;  Total of 40 licenses in use)
+
+  "ccmpsuite" v18.06, vendor: cdlmd, expiry: 31-dec-2030
+  floating license
+
+    jdoe node12 node12 (v18.06) (licsrv-star/1999 7012), start Mon 5/26 8:05
+    asmith node07 node07 (v18.06) (licsrv-star/1999 7020), start Mon 5/26 8:41
+
+Users of hpcdomains:  (Total of 4096 licenses issued;  Total of 512 licenses in use)
+
+  "hpcdomains" v18.06, vendor: cdlmd, expiry: 31-dec-2030
+  floating license
+
+    jdoe node12 node12 (v18.06) (licsrv-star/1999 7013), start Mon 5/26 8:05

@@ -1,0 +1,5 @@
+node_modules
+.next
+.git
+/tmp
+dev/start-dev.sh

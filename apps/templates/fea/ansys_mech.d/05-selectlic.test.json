@@ -1,0 +1,49 @@
+{
+    "fields": {
+        "solverLic": {
+            "type": "radioButtons",
+            "label":  "Mechanical Solver License preference",
+            "radios": {
+                "auto":{
+                    "caption"   : "Automatic",
+                    "value"     : ""
+                },
+                "ansys":{
+                    "caption"   : "Mechanical (ansys)",
+                    "value"     : "ansys"
+                },
+                "meba":{
+                    "caption"   : "Mechanical Solver (meba)",
+                    "value"     : "meba"
+                }
+            },
+            "required"          :  false
+        },
+        "hpcLic": {
+            "type": "radioButtons",
+            "label":  "HPC Solver License preference",
+            "radios": {
+                "auto":{
+                    "caption"   : "Automatic",
+                    "value"     : ""
+                },
+                "ansys":{
+                    "caption"   : "HPC tokens (anshpc)",
+                    "value"     : "anshpc"
+                },
+                "meba":{
+                    "caption"   : "HPC Pack (anshpc_pack)",
+                    "value"     : "anshpc_pack"
+                }
+            },
+            "required"          :  false
+        }
+    },
+    "parameters": {
+        "mainCommand+": "(-p VAR.solverLic) (-ppf VAR.hpcLic)",
+        "default"   : {
+            "solverLic"    :   "",
+            "hpcLic"       :   ""
+        }
+    }
+}

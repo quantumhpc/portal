@@ -1,0 +1,4 @@
+{
+        "binary"     :  "./binaries/rlmutil",
+        "cmd"        :  "rlmstat -a -c"
+}

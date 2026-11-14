@@ -1,0 +1,2 @@
+# VirtualGL wrapper
+WRAPPER="vglrun "

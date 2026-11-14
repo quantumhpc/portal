@@ -1,0 +1,22 @@
+name: community
+
+on:
+  issues:
+    types: [opened]
+  # Safe: this job never checks out PR code.
+  pull_request_target:
+    types: [opened]
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  welcome:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/first-interaction@v1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          issue-message: "Thanks for opening your first issue! A maintainer will take a look soon."
+          pr-message: "Thanks for your first pull request! Please check that every commit is signed off (DCO, see CONTRIBUTING.md). A maintainer will review it shortly."

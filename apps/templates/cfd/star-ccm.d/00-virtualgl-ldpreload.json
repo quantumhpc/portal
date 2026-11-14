@@ -1,0 +1,7 @@
+{
+    "parameters": {
+        "default"   : {
+            "defaultOps+"   :   "-clientldpreload libdlfaker.so:libvglfaker.so"
+        }
+    }
+}

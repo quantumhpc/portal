@@ -1,0 +1,44 @@
+{
+    "fields": {
+        "mpi": {
+            "type": "radioButtons",
+            "label":  "MPI Mode",
+            "radios": {
+                "platformmpi":{
+                    "caption"   :  "Platform MPI",
+                    "value"     :  "pcmpi"
+                },
+                "intelmpi":{
+                    "caption"   :  "Intel MPI",
+                    "value"     :  "intelmpi"
+                }
+            },
+            "required"          :  true
+        },
+        "distributed": {
+            "type": "radioButtons",
+            "label":  "SMP/DMP",
+            "radios": {
+                "smp":{
+                    "caption"   :  "SMP",
+                    "value"     : "-smp"
+                },
+                "dmp":{
+                    "caption"   :  "DMP",
+                    "value"     : "-dmp"
+                }
+            },
+            "required"          :  true
+        }
+    },
+    "parameters": {
+        "mainCommand": "VAR.appBinaries VAR.defaultOps VAR.distributed -mpi VAR.mpi -j VAR.jobName (-i \"VAR.inputFileName\") (-o VAR.outputFile)",
+        "default"   : {
+            "defaultOps"    :   "-b nolist -s noread -dis",
+            "distributed"   :   "-dmp",
+            "mpi"           :   "intelmpi",
+            "outputFile"    :   "solve.out"
+        },
+        "prologueCommands": []
+    }
+}

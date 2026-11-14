@@ -1,0 +1,11 @@
+{
+  "method"        : "local",
+  "localShell"    : "/bin/bash",
+  "localCopy"     : "/bin/cp",
+  "binariesDir"   : "dev/slurm-mock",
+  "useAlternate"  : false,
+  "useSharedDir"  : false,
+  "sharedDir"     : "/tmp/qhpc-dev-jobs",
+  "workingDir"    : "/tmp/qhpc-dev-jobs",
+  "userParams"    : ["username", "uid", "gid"]
+}

@@ -1,0 +1,26 @@
+{
+  "fields": {
+    "iterations": {
+      "type": "textField",
+      "label": "Iterations",
+      "caption": "Number of time steps to print",
+      "required": true
+    },
+    "delay": {
+      "type": "textField",
+      "label": "Seconds per iteration",
+      "required": true
+    }
+  },
+  "parameters": {
+    "appBinaries": {
+      "v1": "/opt/qhpc-demo/residual-demo.sh"
+    },
+    "mainCommand": "bash VAR.appBinaries VAR.iterations VAR.delay (> VAR.outputFile 2>&1)",
+    "default": {
+      "iterations": "60",
+      "delay": "1",
+      "useinputFile": false
+    }
+  }
+}

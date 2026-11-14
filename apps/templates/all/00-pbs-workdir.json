@@ -1,0 +1,5 @@
+{
+    "parameters": {
+        "prologueCommands-": ["cd $PBS_O_WORKDIR"]
+    }
+}

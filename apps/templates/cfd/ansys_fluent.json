@@ -1,0 +1,58 @@
+{
+    "fields": {
+        "dimension": {
+            "type": "radioButtons",
+            "label":  "Solver dimension",
+            "radios": {
+                "2d":{
+                    "caption"   :  "2D",
+                    "value"     :  "2d"
+                },
+                "3d":{
+                    "caption"   :  "3D",
+                    "value"     :  "3d"
+                }
+            },
+            "required"          :  true
+        },
+        "ddp": {
+            "type"              : "checkbox",
+            "label"             :  "Double Precision",
+            "caption"           :  "Use the double precision solver",
+            "value": {
+                "true"          :   "dp",
+                "false"         :   ""
+            },
+            "required"          :  false
+        },
+        "meshing": {
+            "type"              : "checkbox",
+            "label"             :  "Meshing mode",
+            "caption"           :  "Start Fluent in Meshing mode",
+            "value": {
+                "true"          :   "-meshing",
+                "false"         :   ""
+            },
+            "required"          :  false
+        }
+    },
+    "parameters": {
+        "mainCommand": "VAR.appBinaries VAR.dimension + VAR.ddp VAR.defaultOps -t + VAR.numProcs VAR.meshing (-i \"VAR.inputFileName\")",
+        "default"   : {
+            "defaultOps"     :   "[batch ? [-g]]",
+            "dimension"      :   "2d",
+            "ddp"            :   "dp",
+            "outputFile"     :   "outputFile.log",
+            "scriptCommands" :   [
+                "/file/read-case-data CASE.cas",
+                "it 1000",
+                "/file/write-case-data NEWCASE.cas",
+                "exit"
+            ]
+        },
+        "prologueCommands": [],
+        "options":{
+            "allowWriteScript"  : true
+        }
+    }
+}

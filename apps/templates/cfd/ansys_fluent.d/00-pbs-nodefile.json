@@ -1,0 +1,11 @@
+{
+    "parameters": {
+        "default"   : {
+            "defaultOps+"     :   "-cnf=pnodes -pethernet -mpi=pcmpi -ssh"
+        },
+        "prologueCommands+": [
+            "#Parse the nodefile for Fluent",
+            "cat $PBS_NODEFILE | sort>pnodes"
+        ]
+    }
+}

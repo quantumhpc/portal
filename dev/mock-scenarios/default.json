@@ -1,0 +1,46 @@
+{
+  "name": "default",
+  "description": "Three-node cluster, two partitions/queues, no pre-seeded jobs.",
+  "host": "mockhost",
+  "nodes": [
+    {
+      "name": "compute01",
+      "state": { "slurm": "ALLOCATED", "pbs": "job-busy" },
+      "cpuTotal": 8,
+      "cpuAlloc": 4,
+      "memTotalMb": 64000,
+      "memFreeMb": 30000,
+      "memAllocMb": 32000,
+      "partitions": ["main"],
+      "gpus": []
+    },
+    {
+      "name": "compute02",
+      "state": { "slurm": "IDLE", "pbs": "free" },
+      "cpuTotal": 8,
+      "cpuAlloc": 0,
+      "memTotalMb": 64000,
+      "memFreeMb": 62000,
+      "memAllocMb": 0,
+      "partitions": ["main"],
+      "gpus": []
+    },
+    {
+      "name": "compute03",
+      "state": { "slurm": "DOWN", "pbs": "down" },
+      "cpuTotal": 8,
+      "cpuAlloc": 0,
+      "memTotalMb": 64000,
+      "memFreeMb": 0,
+      "memAllocMb": 0,
+      "partitions": ["main", "gpu"],
+      "gpus": [{ "model": "a100", "count": 4 }]
+    }
+  ],
+  "queues": [
+    { "name": "main", "default": true, "maxTime": "1-00:00:00", "totalCpus": 16, "totalNodes": 2 },
+    { "name": "gpu", "default": false, "maxTime": "4-00:00:00", "totalCpus": 8, "totalNodes": 1 }
+  ],
+  "licenseServers": [],
+  "preSeededJobs": []
+}

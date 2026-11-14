@@ -1,0 +1,72 @@
+{
+    "fields": {
+        "double": {
+            "type": "radioButtons",
+            "label":  "Double Precisions",
+            "radios": {
+                "both":{
+                    "caption"   :  "Both",
+                    "value"     : "both"
+                },
+                "constraint":{
+                    "caption"   :  "Constraint",
+                    "value"     : "constraint"
+                },
+                "explicit":{
+                    "caption"   :  "Explicit",
+                    "value"     : "explicit"
+                },
+                "off":{
+                    "caption"   :  "Off",
+                    "value"     : "off"
+                }
+            },
+            "required"          :  true
+        },
+        "mpmode": {
+            "type": "radioButtons",
+            "label":  "MP Mode",
+            "radios": {
+                "mpi":{
+                    "caption"   :  "MPI",
+                    "value"     : "mpi"
+                },
+                "off":{
+                    "caption"   :  "Threads",
+                    "value"     : "threads"
+                }
+            },
+            "required"          :  true
+        },
+        "memory": {
+            "type"              : "textField",
+            "label"             :  "Restrict memory",
+            "caption"           :  "Limit the amount of memory for the job",
+            "checkbox"          :  true,
+            "pattern"           :  "/^[a-zA-Z0-9.]*$/",
+            "required"          :  false
+        }
+    },
+    "parameters": {
+        "appBinaries": {
+            "v2017": "/opt/simulia/abqlauncher"
+        },
+        "mainCommand": "VAR.appBinaries job=VAR.jobName cpus=VAR.numProcs (input=\"VAR.inputFileName\") VAR.defaultOps double=VAR.double mpmode=VAR.mpmode (memory=\"VAR.memory\")",
+        "default"   : {
+            "defaultOps"    :   "",
+            "double"        :   "both",
+            "mpmode"        :   "mpi",
+            "memory"        :   "90%",
+            "outputFile="   :   "VAR.jobName.msg",
+            "stdout="       :   "VAR.jobName.msg",
+            "stderr="       :   "VAR.jobName.msg"
+        },
+        "prologueCommands": [],
+        "options":{
+            "allowWriteScript"  : false
+        }
+    },
+    "force": {
+        "outputFile="       :   "VAR.jobName.sta"
+    }
+}

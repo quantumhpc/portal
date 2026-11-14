@@ -1,0 +1,5 @@
+# PAM service for the QuantumHPC Portal (RHEL/Rocky/Alma/Fedora/SUSE)
+# Installed as /etc/pam.d/qhpc-portal. Only auth and account are used.
+# To enforce MFA, LDAP/SSSD or access rules for the portal only, edit here.
+auth     include  password-auth
+account  include  password-auth

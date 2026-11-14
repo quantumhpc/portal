@@ -1,0 +1,18 @@
+#!/usr/bin/env node
+// Minimal qmgr -c "p s": dump server + queue settings.
+import { loadScenario, host } from "../mock-bin/lib.mjs";
+const scenario = loadScenario();
+const lines = [
+  `# server settings`,
+  `set server scheduling = True`,
+  `set server default_queue = ${scenario.queues.find(q=>q.default)?.name || "main"}`,
+  `set server server_state = Active`,
+  `set server pbs_version = ${host(scenario)}-mock-1.0`,
+];
+for (const q of scenario.queues) {
+  lines.push(`set queue ${q.name} queue_type = Execution`);
+  lines.push(`set queue ${q.name} resources_max.walltime = ${q.maxTime || "1-00:00:00"}`);
+  lines.push(`set queue ${q.name} enabled = True`);
+  lines.push(`set queue ${q.name} started = True`);
+}
+process.stdout.write(lines.join("\n") + "\n");

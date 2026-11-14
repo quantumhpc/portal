@@ -1,0 +1,7 @@
+{
+    "parameters": {
+        "prologueCommands": [
+            "export TMUX_SOCKET=\"/var/tmp/tmux-VAR.jobName\""
+        ]
+    }
+}

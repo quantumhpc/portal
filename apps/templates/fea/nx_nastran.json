@@ -1,0 +1,40 @@
+{
+    "fields": {
+        "dmp": {
+            "type": "radioButtons",
+            "label":  "Parallelism",
+            "radios": {
+                "2d":{
+                    "caption"   :  "SMP",
+                    "value"     :  false
+                },
+                "3d":{
+                    "caption"   :  "DMP",
+                    "value"     :  true
+                }
+            },
+            "required"          :  true
+        },
+        "directives": {
+            "type"          : "file",
+            "multiple"      : false,
+            "label"         : "Directive File",
+            "sublabel"      : "Use a file containing the directives to use (.ini)",
+            "required"      :  true,
+            "switch"        :  true
+        }
+    },
+    "parameters": {
+        "mainCommand": "VAR.appBinaries VAR.directives VAR.inputFileName VAR.defaultOps (VAR.dmp ? dmp + = + VAR.numProcs : parallel + = + VAR.numProcs ) out=VAR.outputFile",
+        "default"   : {
+            "defaultOps"    :   "batch=no scratch=yes",
+            "dmp"           :   true,
+            "outputFile"    :   "output"
+        },
+        "prologueCommands": [],
+        "postCommands": []
+    },
+    "force": {
+        "outputFile="       :   "VAR.outputFile.log"
+    }
+}

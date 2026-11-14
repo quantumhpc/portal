@@ -1,0 +1,15 @@
+{
+    "fields": {
+    },
+    "parameters": {
+        "mainCommand": "VAR.appBinaries (\"VAR.inputFileName\") VAR.defaultOps -nt VAR.numProcs (-outfile VAR.outputFile)",
+        "default"   : {
+            "defaultOps"    :   "",
+            "outputFile"    :   "output"
+        },
+        "prologueCommands": [],
+        "options":{
+            "allowWriteScript"  : false
+        }
+    }
+}

@@ -1,0 +1,6 @@
+#!/usr/bin/env node
+import { readJob, writeJob } from "../mock-bin/lib.mjs";
+const id = String(process.argv[2] || "").split(".")[0];
+const j = readJob("pbs", id);
+if (!j) { process.stderr.write(`qhold: unknown job ${id}\n`); process.exit(1); }
+j.state = "H"; writeJob("pbs", j);

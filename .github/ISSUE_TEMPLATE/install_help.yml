@@ -1,0 +1,33 @@
+name: Installation help
+description: Problems installing or configuring the portal on your cluster
+labels: [question, installation]
+body:
+  - type: markdown
+    attributes:
+      value: Please read docs/INSTALL.md (including Troubleshooting) first. Remove secrets from any config you paste.
+  - type: input
+    id: distro
+    attributes:
+      label: OS / distribution
+      placeholder: RHEL 9.4
+    validations:
+      required: true
+  - type: input
+    id: node
+    attributes:
+      label: Node.js version (`node -v`)
+    validations:
+      required: true
+  - type: dropdown
+    id: scheduler
+    attributes:
+      label: Scheduler
+      options: [Slurm, PBS Pro / OpenPBS, Other]
+  - type: textarea
+    id: problem
+    attributes:
+      label: What's going wrong?
+      description: Include the command you ran and its output.
+      render: shell
+    validations:
+      required: true

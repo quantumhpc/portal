@@ -1,0 +1,42 @@
+{
+    "fields": {
+        "inmemory": {
+            "type": "radioButtons",
+            "label":  "In-memory I/O",
+            "radios": {
+                "yes":{
+                    "caption"   :  "ON",
+                    "value"     :  "ON"
+                },
+                "no":{
+                    "caption"   :  "OFF",
+                    "value"     :  "OFF"
+                }
+            },
+            "required"          :  true
+        },
+        "directives": {
+            "type"          : "file",
+            "multiple"      : false,
+            "label"         : "Directive File",
+            "sublabel"      : "Use a file containing the directives to use (.ini)",
+            "required"      :  true,
+            "switch"        :  true
+        }
+    },
+    "parameters": {
+        "mainCommand": "VAR.appBinaries VAR.directives VAR.inputFileName VAR.defaultOps NPROCESSORS=VAR.numProcs (INMEMORYIO=VAR.inmemory)",
+        "default"   : {
+            "defaultOps"    :   "",
+            "inmemory"      :   "ON",
+            "outputFile="   :   "VAR.inputFileName[.LOG]"
+        },
+        "prologueCommands": [
+            "OMP_NUM_THREADS=VAR.numProcs"
+        ],
+        "postCommands": []
+    },
+    "force": {
+        "outputFile="       :   "VAR.inputFileName[.LOG]"
+    }
+}

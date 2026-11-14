@@ -1,0 +1,11 @@
+{
+    "parameters": {
+        "default"   : {
+            "defaultOps+"   :   "-par-dist $pnodes"
+        },
+        "prologueCommands+": [
+            "pnodes=`cat $PBS_NODEFILE`",
+            "pnodes=`echo $pnodes | sed -e 's/ /,/g'`"
+        ]
+    }
+}

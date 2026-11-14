@@ -1,0 +1,7 @@
+#!/usr/bin/env node
+import { readJob, writeJob } from "../mock-bin/lib.mjs";
+const dest = process.argv[2];
+const id = String(process.argv[3] || "").split(".")[0];
+const j = readJob("pbs", id);
+if (!j) { process.stderr.write(`qmove: unknown job ${id}\n`); process.exit(1); }
+j.queue = dest; j.partition = dest; writeJob("pbs", j);

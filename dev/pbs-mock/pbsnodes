@@ -1,0 +1,49 @@
+#!/usr/bin/env node
+// Minimal pbsnodes: supports `pbsnodes -a` (list all) and `pbsnodes <name>`.
+import { loadScenario, pbsJsonArg, pbsJsonEnvelope } from "../mock-bin/lib.mjs";
+
+const scenario = loadScenario();
+const { json, args } = pbsJsonArg("pbsnodes");
+const filter = args.find(a => !a.startsWith("-"));
+const wantAll = args.includes("-a") || !filter;
+
+function emit(node) {
+  const lines = [
+    node.name,
+    `   state = ${node.state.pbs}`,
+    `   pcpus = ${node.cpuTotal}`,
+    `   resources_available.ncpus = ${node.cpuTotal}`,
+    `   resources_available.mem = ${node.memTotalMb}mb`,
+    `   resources_available.memfree = ${node.memFreeMb}mb`,
+    `   resources_available.memtotal = ${node.memTotalMb}mb`,
+    `   resources_assigned.ncpus = ${node.cpuAlloc}`,
+    `   resources_assigned.mem = ${node.memAllocMb}mb`,
+  ];
+  if (node.gpus?.length) {
+    const total = node.gpus.reduce((s, g) => s + g.count, 0);
+    lines.push(`   gpus = ${total}`);
+  }
+  return lines.join("\n");
+}
+
+const nodes = wantAll ? scenario.nodes : scenario.nodes.filter(n => n.name === filter);
+if (!wantAll && nodes.length === 0) {
+  process.stderr.write(`Node ${filter} not found\n`);
+  process.exit(1);
+}
+
+if (json) {
+  const out = {};
+  for (const n of nodes) {
+    out[n.name] = {
+      state: n.state.pbs, pcpus: n.cpuTotal,
+      resources_available: { ncpus: n.cpuTotal, mem: `${n.memTotalMb}mb`, memfree: `${n.memFreeMb}mb`, memtotal: `${n.memTotalMb}mb` },
+      resources_assigned: { ncpus: n.cpuAlloc, mem: `${n.memAllocMb}mb` },
+      ...(n.gpus?.length ? { gpus: n.gpus.reduce((s, g) => s + g.count, 0) } : {}),
+    };
+  }
+  process.stdout.write(pbsJsonEnvelope("nodes", out, scenario));
+  process.exit(0);
+}
+
+process.stdout.write(nodes.map(emit).join("\n\n") + "\n");

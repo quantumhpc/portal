@@ -1,0 +1,14 @@
+{
+  "method"        : "local",
+  "serverName"    : "localhost",
+  "username"      : "hpcuser",
+  "defaultOpts"   : "-o Port=2222 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR",
+  "sshExec"       : "/usr/bin/ssh",
+  "scpExec"       : "/usr/bin/scp",
+  "binariesDir"   : "/opt/qhpc-mock/slurm-mock",
+  "useAlternate"  : false,
+  "useSharedDir"  : false,
+  "sharedDir"     : "/tmp/qhpc-mock-jobs",
+  "workingDir"    : "/tmp/qhpc-mock-jobs",
+  "userParams"    : ["secretAccessKey"]
+}
