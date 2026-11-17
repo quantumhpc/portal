@@ -1,0 +1,5 @@
+{
+    "parameters": {
+        "mainCommand+" : "> VAR.outputFile 2>&1"
+    }
+}

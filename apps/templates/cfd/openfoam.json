@@ -1,0 +1,43 @@
+{
+    "fields": {
+        "solver": {
+            "type": "radioButtons",
+            "label": "Solver",
+            "radios": {
+                "icoFoam":     { "caption": "icoFoam (transient, laminar)",       "value": "icoFoam" },
+                "pisoFoam":    { "caption": "pisoFoam (transient, turbulent)",    "value": "pisoFoam" },
+                "pimpleFoam":  { "caption": "pimpleFoam (transient, large steps)", "value": "pimpleFoam" },
+                "simpleFoam":  { "caption": "simpleFoam (steady state)",          "value": "simpleFoam" }
+            },
+            "required": true
+        },
+        "blockMesh": {
+            "type": "checkbox",
+            "label": "Mesh",
+            "caption": "Generate the mesh with blockMesh first",
+            "value": { "true": "blockMesh", "false": "" },
+            "required": false
+        }
+    },
+    "parameters": {
+        "appBinaries": {
+            "v2512": "/usr/lib/openfoam/openfoam2512/etc/bashrc"
+        },
+        "mainCommand": "VAR.solver (> \"$jobdir/VAR.outputFile\" 2>&1)",
+        "default": {
+            "solver": "icoFoam",
+            "blockMesh": "blockMesh",
+            "useinputFile": true
+        },
+        "prologueCommands": [
+            "# The input file is the case as an archive (.tar.gz, .tgz or .tar).",
+            "jobdir=$PWD",
+            "source VAR.appBinaries",
+            "(tar -xf \"VAR.inputFileName\")",
+            "controlDict=$(find . -maxdepth 3 -path '*/system/controlDict' | head -n 1)",
+            "[ -n \"$controlDict\" ] || { echo 'No system/controlDict in the case archive' >&2; exit 1; }",
+            "cd \"$(dirname \"$(dirname \"$controlDict\")\")\"",
+            "(VAR.blockMesh > log.blockMesh 2>&1)"
+        ]
+    }
+}

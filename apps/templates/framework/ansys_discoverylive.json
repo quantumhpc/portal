@@ -1,0 +1,20 @@
+{
+    "fields": {
+    },
+    "parameters": {
+        "appBinaries":{
+            "v190" : "C:\\Program Files\\ANSYS Inc\\v190\\SCDM\\SpaceClaim.exe"
+        },
+        "mainCommand": "VAR.appBinaries VAR.defaultOps",
+        "default"   : {
+            "defaultOps"        :   "/RunApollo=true /UseSubscription=true",
+            "useoutputFile"     :   true,
+            "outputFile"        :   "outputFile",
+            "scriptCommands"    :   ["# Python Script, API Version = V17"]
+        },
+        "prologueCommands": [],
+        "options":{
+            "allowWriteScript"  : true
+        }
+    }
+}

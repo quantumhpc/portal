@@ -1,0 +1,39 @@
+{
+    "parameters": {
+        "default"   : {
+            "useload_project"   :   true,
+            "scriptCommands="   :   [
+                "import os",
+                "logFile = open('{path}/{logfile}'.format(path=os.environ['PBS_O_WORKDIR'], logfile='VAR.outputFile'),'w')",
+                "for system in GetAllSystems():",
+                " for component in system.Components:",
+                "  container = component.DataContainer",
+                "  if str(container) == 'Solution':",
+                "   analysis1 = system.GetContainer(ComponentName='Solution')",
+                "   logFile.write('Opening Solution for %s \\n' % system)",
+                "   break",
+                " else:",
+                "  continue",
+                " break",
+                "logFile.write('Opening Solution Component\\n')",
+                "analysis1.Edit()",
+                "try:",
+                " logFile.write('Updating Project...\\n')",
+                " Update()",
+                "except:",
+                " logFile.write('> Update failed.\\n')",
+                "else:",
+                " logFile.write('> Update succeeded. Saving...\\n')",
+                " analysis1.Exit()",
+                " Save(Overwrite=True)",
+                " logFile.write('> Archiving...\\n')",
+                " Archive(FilePath='{path}/{name}.wbpz'.format(path=os.environ['PBS_O_WORKDIR'], name='VAR.jobName'),",
+                "  IncludeUserFiles=True,",
+                "  IncludeSkippedFiles=True,",
+                "  IncludeExternalImportedFiles=False,",
+                "  FailIfFilesNeedRepair=False)",
+                "logFile.close()"
+            ]
+        }
+    }
+}

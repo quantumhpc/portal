@@ -1,0 +1,13 @@
+{
+    "parameters": {
+        "default"   : {
+            "defaultOps+"     :   "sdir=$PBS_O_WORKDIR/tmp"
+        },
+        "prologueCommands+": [
+            "mkdir ./tmp"
+        ],
+        "postCommands": [
+            "rm -rf ./tmp"
+        ]
+    }
+}

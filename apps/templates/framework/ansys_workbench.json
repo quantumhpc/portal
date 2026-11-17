@@ -1,0 +1,24 @@
+{
+    "fields": {
+        "load_project": {
+            "type"          : "file",
+            "multiple"      : false,
+            "label"         : "Load an archived project ",
+            "sublabel"      : "Load the specified ANSYS Workbench archived project (.wbpz) file on start-up",
+            "required"      :  true,
+            "switch"        :  true
+        }
+    },
+    "parameters": {
+        "mainCommand": "VAR.appBinaries VAR.defaultOps (-R VAR.inputFileName) (-F VAR.load_project)",
+        "default"   : {
+            "defaultOps"        :   "",
+            "useoutputFile"     :   true,
+            "outputFile"        :   "outputFile"
+        },
+        "prologueCommands": [],
+        "options":{
+            "allowWriteScript"  : true
+        }
+    }
+}

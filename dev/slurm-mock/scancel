@@ -1,0 +1,18 @@
+#!/usr/bin/env node
+// Mock scancel <jobid> [jobid ...] — marks jobs CANCELLED; squeue garbage-collects
+// terminal jobs after a grace period so tracking sees the state transition.
+import { readJob, writeJob, killIfRunning } from "../mock-bin/lib.mjs";
+
+const ids = process.argv.slice(2).filter(a => !a.startsWith("-"));
+if (ids.length === 0) { process.stderr.write("scancel: no job id\n"); process.exit(1); }
+
+for (const id of ids) {
+  const j = readJob("slurm", id);
+  if (!j) continue;  // real scancel is silent on missing job
+
+  j.state = "CANCELLED";
+  j.endTime = new Date().toISOString();
+  writeJob("slurm", j);
+  // Demo mode (QHPC_MOCK_RUN=1): stop the script after the state is saved.
+  killIfRunning("slurm", id);
+}

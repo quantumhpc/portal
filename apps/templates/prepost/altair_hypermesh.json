@@ -1,0 +1,18 @@
+{
+    "fields": {
+    },
+    "parameters": {
+        "appBinaries": {
+            "2017": "hm"
+        },
+        "mainCommand": "VAR.appBinaries + [batch ? [batch]] (\"VAR.inputFileName\") VAR.defaultOps",
+        "default"   : {
+            "defaultOps"    :   "-nobg",
+            "outputFile"    :   "output"
+        },
+        "prologueCommands": [],
+        "options":{
+            "allowWriteScript"  : false
+        }
+    }
+}

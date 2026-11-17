@@ -1,0 +1,18 @@
+{
+  "file": "outputFile",
+  "logScale": true,
+  "iteration": { "pattern": "^Time = ([0-9.]+)" },
+  "series": [
+    {
+      "pattern": "Solving for (\\w+), Initial residual = ([0-9.eE+-]+)",
+      "label": "$1",
+      "value": 2,
+      "firstPerIteration": true
+    }
+  ],
+  "outputs": [
+    { "label": "Run time (s)", "pattern": "^ExecutionTime = ([0-9.]+)", "type": "Number" },
+    { "label": "Node", "pattern": "^Residual demo on (\\S+)", "type": "Text" }
+  ],
+  "end": { "success": "^End$" }
+}

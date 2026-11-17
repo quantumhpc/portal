@@ -1,0 +1,4 @@
+# PAM service for the QuantumHPC Portal (Debian/Ubuntu)
+# Installed as /etc/pam.d/qhpc-portal. Only auth and account are used.
+@include common-auth
+@include common-account

@@ -1,0 +1,18 @@
+{
+    "fields": {
+    },
+    "parameters": {
+        "appBinaries": {
+            "2017": "hst"
+        },
+        "mainCommand": "VAR.appBinaries + [batch ? [batch]] (\"VAR.inputFileName\") VAR.defaultOps",
+        "default"   : {
+            "defaultOps"    :   "",
+            "outputFile"    :   "output"
+        },
+        "prologueCommands": [],
+        "options":{
+            "allowWriteScript"  : false
+        }
+    }
+}

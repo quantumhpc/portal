@@ -1,0 +1,21 @@
+{
+    "fields": {
+        "batchMode": {
+            "type"              :  "checkbox",
+            "label"             :  "Batch mode",
+            "caption"           :  "Run in a command window",
+            "value": {
+                "true"          :   "-B",
+                "false"         :   ""
+            },
+            "required"          :  false
+        }
+    },
+    "parameters": {
+        "mainCommand+" : "VAR.batchMode",
+        "default"   : {
+            "batchMode"         :   "-B",
+            "inputFileSource"   :   "write"
+        }
+    }
+}

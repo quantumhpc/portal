@@ -1,0 +1,35 @@
+# QuantumHPC Portal — systemd unit
+# Installed by deploy/install.sh as /etc/systemd/system/qhpc-portal.service.
+# @PREFIX@ and @NODE@ are substituted at install time.
+[Unit]
+Description=QuantumHPC Portal (HPC web portal)
+Documentation=https://github.com/quantumhpc/portal
+After=network-online.target
+Wants=network-online.target
+# Startup checks exit(1) on insecure config; don't hammer restarts.
+StartLimitIntervalSec=60
+StartLimitBurst=3
+
+[Service]
+Type=simple
+# Runs as root: the portal authenticates users through PAM and then runs
+# scheduler commands and file operations as the logged-in user's uid/gid.
+# Bind to localhost and expose it only through the TLS reverse proxy.
+User=root
+WorkingDirectory=@PREFIX@
+EnvironmentFile=/etc/qhpc-portal/portal.env
+ExecStart=@NODE@ @PREFIX@/node_modules/next/dist/bin/next start -H ${HOSTNAME} -p ${PORT}
+Restart=on-failure
+RestartSec=5
+
+# Hardening compatible with per-user file access (home/scratch stay writable)
+ProtectSystem=full
+ReadWritePaths=/etc/qhpc-portal /var/lib/qhpc-portal
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictRealtime=true
+LockPersonality=true
+
+[Install]
+WantedBy=multi-user.target

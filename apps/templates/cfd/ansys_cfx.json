@@ -1,0 +1,98 @@
+{
+    "fields": {
+        "ddp": {
+            "type"              : "checkbox",
+            "label"             :  "Double Precision",
+            "caption"           :  "(enable double precision)",
+            "value": {
+                "true"          :   "-double",
+                "false"         :   "-single"
+            },
+            "required"          :  false
+        },
+        "mpi": {
+            "type": "radioButtons",
+            "label":  "MPI Mode",
+            "radios": {
+                "platformmpi":{
+                    "caption"   :  "Platform MPI Distributed Parallel",
+                    "value"     :  "Platform MPI Distributed Parallel"
+                },
+                "intelmpi":{
+                    "caption"   :  "Intel MPI Distributed Parallel",
+                    "value"     :  "Intel MPI Distributed Parallel"
+                }
+            },
+            "required"          :  true
+        },
+        "interpolate": {
+            "type"          : "file",
+            "multiple"      : false,
+            "label"         : "Initialization with a file",
+            "sublabel"      : "Interpolate a result file onto a new mesh",
+            "required"      :  true,
+            "switch"        :  true
+        },
+        "interpolationMode": {
+            "type": "radioButtons",
+            "label":  "Interpolation Mode",
+            "radios": {
+                "initial":{
+                    "caption"   :  "Use initial values as a basic initial guess (-initial-file)",
+                    "value"     :  "initial-file"
+                },
+                "continue":{
+                    "caption"   :  "Use initial values and continues the run (-continue-from-file)",
+                    "value"     :  "continue-from-file"
+                }
+            },
+            "required"          :  "useinterpolate='true'",
+            "clear"             :  "interpolate",
+            "disabled"          :  "useinterpolate!='true'"
+        },
+        "partitioning": {
+            "type": "radioButtons",
+            "label":  "Partitioning Mode",
+            "radios": {
+                "metiskway":{
+                    "caption"   :  "MeTiS k-way",
+                    "value"     :  "metis-kway"
+                },
+                "metisrec":{
+                    "caption"   :  "MeTiS Recursive Bisection",
+                    "value"     :  "metis-rec"
+                },
+				"simple":{
+                    "caption"   :  "Simple Assignment",
+                    "value"     :  "simple"
+                },
+				"drcb":{
+                    "caption"   :  "Directional Recursive Coordinate Bisection",
+                    "value"     :  "drcb"
+                },
+				"rcb":{
+                    "caption"   :  "Directional Recursive Coordinate Bisection",
+                    "value"     :  "rcb"
+                }
+            },
+            "required"          :  true
+        }
+    },
+    "parameters": {
+        "mainCommand": "VAR.appBinaries -name VAR.jobName VAR.ddp VAR.defaultOps -par -part VAR.numProcs (-def \"VAR.inputFileName\") (-VAR.interpolationMode) (\"VAR.interpolate\") -part-mode VAR.partitioning -start-method \"VAR.mpi\" -fullname VAR.outputFile",
+        "default"   : {
+            "defaultOps"        :   "[batch ? [-batch]]",
+            "ddp"               :   "-double",
+            "mpi"               :   "Intel MPI Distributed Parallel",
+            "partitioning"      :   "metis-kway",
+            "outputFile="       :   "cfxcase"
+        },
+        "prologueCommands": [],
+        "options":{
+            "allowWriteScript"  : true
+        }
+    },
+    "force": {
+        "outputFile"        :   "VAR.outputFile.out"
+    }
+}

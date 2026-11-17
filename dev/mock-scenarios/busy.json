@@ -1,0 +1,35 @@
+{
+  "name": "busy",
+  "description": "Saturated cluster — every node allocated, queue filling up.",
+  "host": "mockhost",
+  "nodes": [
+    {
+      "name": "compute01",
+      "state": { "slurm": "ALLOCATED", "pbs": "job-busy" },
+      "cpuTotal": 8, "cpuAlloc": 8, "memTotalMb": 64000, "memFreeMb": 1200, "memAllocMb": 62800,
+      "partitions": ["main"], "gpus": []
+    },
+    {
+      "name": "compute02",
+      "state": { "slurm": "ALLOCATED", "pbs": "job-busy" },
+      "cpuTotal": 8, "cpuAlloc": 8, "memTotalMb": 64000, "memFreeMb": 800, "memAllocMb": 63200,
+      "partitions": ["main"], "gpus": []
+    },
+    {
+      "name": "compute03",
+      "state": { "slurm": "ALLOCATED", "pbs": "job-busy" },
+      "cpuTotal": 8, "cpuAlloc": 8, "memTotalMb": 64000, "memFreeMb": 1500, "memAllocMb": 62500,
+      "partitions": ["main", "gpu"], "gpus": [{ "model": "a100", "count": 4 }]
+    }
+  ],
+  "queues": [
+    { "name": "main", "default": true, "maxTime": "1-00:00:00", "totalCpus": 16, "totalNodes": 2 },
+    { "name": "gpu", "default": false, "maxTime": "4-00:00:00", "totalCpus": 8, "totalNodes": 1 }
+  ],
+  "licenseServers": [],
+  "preSeededJobs": [
+    { "name": "fluent_run_42", "user": "alice", "queue": "main", "state": "RUNNING", "elapsedSec": 1820 },
+    { "name": "abaqus_solve_8", "user": "bob",   "queue": "main", "state": "RUNNING", "elapsedSec": 600 },
+    { "name": "ls_dyna_crash", "user": "carol", "queue": "main", "state": "PENDING", "elapsedSec": 0 }
+  ]
+}

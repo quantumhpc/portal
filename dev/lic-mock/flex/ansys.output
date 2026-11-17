@@ -1,0 +1,38 @@
+lmutil - Copyright (c) 1989-2023 Flexera. All Rights Reserved.
+Flexible License Manager status on Mon 5/26/2026 09:42
+
+License server status: 1055@licsrv-ansys
+    License file(s) on licsrv-ansys: /opt/ansys/shared_files/licensing/license.dat:
+
+   licsrv-ansys: license server UP (MASTER) v11.19.0
+
+Vendor daemon status (on licsrv-ansys):
+
+  ansyslmd: UP v11.19.0
+
+Feature usage info:
+
+Users of anshpc:  (Total of 256 licenses issued;  Total of 64 licenses in use)
+
+  "anshpc" v2030.1231, vendor: ansyslmd, expiry: 31-dec-2030
+  floating license
+
+    jdoe node12 node12 (v2030.1231) (licsrv-ansys/1055 4521), start Mon 5/26 8:05
+    asmith node07 node07 (v2030.1231) (licsrv-ansys/1055 4530), start Mon 5/26 8:40
+
+Users of ansys:  (Total of 50 licenses issued;  Total of 12 licenses in use)
+
+  "ansys" v2030.1231, vendor: ansyslmd, expiry: 31-dec-2030
+  floating license
+
+    jdoe node12 node12 (v2030.1231) (licsrv-ansys/1055 4522), start Mon 5/26 8:05
+
+Users of cfd_base:  (Total of 25 licenses issued;  Total of 25 licenses in use)
+
+  "cfd_base" v2030.1231, vendor: ansyslmd, expiry: 31-dec-2030
+  floating license
+
+    bwayne node33 node33 (v2030.1231) (licsrv-ansys/1055 4533), start Mon 5/26 7:58
+    ckent node34 node34 (v2030.1231) (licsrv-ansys/1055 4540), start Mon 5/26 8:12
+
+Users of aa_r:  (Error: 8 licenses, unsupported by licensed server)

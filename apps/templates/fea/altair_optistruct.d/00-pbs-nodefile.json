@@ -1,0 +1,10 @@
+{
+    "parameters": {
+        "default"   : {
+            "defaultOps+"  :    "-hostfile pnodes"
+        },
+        "prologueCommands+": [
+            "cat $PBS_NODEFILE | sort>pnodes"
+        ]
+    }
+}

@@ -1,0 +1,27 @@
+#!/usr/bin/env node
+// Mock sinfo — partition/node summary table.
+import { loadScenario, ensureSeeded } from "../mock-bin/lib.mjs";
+
+const scenario = loadScenario();
+ensureSeeded("slurm", scenario);
+
+const stateName = {
+  ALLOCATED: "alloc", IDLE: "idle", DOWN: "down", MIXED: "mix", DRAINED: "drain",
+};
+
+const rows = ["PARTITION|AVAIL|TIMELIMIT|NODES|STATE|NODELIST"];
+for (const q of scenario.queues) {
+  const byState = {};
+  for (const n of scenario.nodes) {
+    if (!n.partitions.includes(q.name)) continue;
+    const s = stateName[n.state.slurm] || n.state.slurm.toLowerCase();
+    (byState[s] = byState[s] || []).push(n.name);
+  }
+  for (const [state, names] of Object.entries(byState)) {
+    rows.push([
+      q.name + (q.default ? "*" : ""), "up", q.maxTime || "1-00:00:00",
+      names.length, state, names.join(","),
+    ].join("|"));
+  }
+}
+process.stdout.write(rows.join("\n") + "\n");

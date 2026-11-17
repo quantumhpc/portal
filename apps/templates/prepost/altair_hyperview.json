@@ -1,0 +1,18 @@
+{
+    "fields": {
+    },
+    "parameters": {
+        "appBinaries": {
+            "2017": "hv"
+        },
+        "mainCommand": "VAR.appBinaries (\"VAR.inputFileName\") VAR.defaultOps",
+        "default"   : {
+            "defaultOps"    :   "",
+            "outputFile"    :   "output"
+        },
+        "prologueCommands": [],
+        "options":{
+            "allowWriteScript"  : false
+        }
+    }
+}

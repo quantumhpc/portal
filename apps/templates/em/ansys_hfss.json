@@ -1,0 +1,34 @@
+{
+    "fields": {
+        "designName": {
+            "type"              : "textField",
+            "label"             :  "Design Name",
+            "caption"           :  "Specify a design name to solve: \"[designName]:Nominal:[setupname]\"",
+            "checkbox"          :  true,
+            "required"          :  false,
+            "disabled"          :  "[ batch ? true :  false ]"
+        },
+        "runScript": {
+            "type"          : "file",
+            "multiple"      : false,
+            "label"         : "Run a script",
+            "sublabel"      : "Load and run the specified script",
+            "required"      :  true,
+            "switch"        :  true
+        }
+    },
+    "parameters": {
+        "mainCommand": "VAR.appBinaries VAR.defaultOps [batch ? [-BatchSolve (\"VAR.designName\")]] -machinelist num= + VAR.numProcs (-RunScript \"VAR.runScript\") -Logfile VAR.outputFile (\"VAR.inputFileName\")",
+        "default"   : {
+            "defaultOps"     :   "[batch ? [-ng]]",
+            "dimension"      :   "2d",
+            "ddp"            :   "dp",
+            "outputFile"     :   "outputFile.log",
+            "scriptCommands" :   []
+        },
+        "prologueCommands": [],
+        "options":{
+            "allowWriteScript"  : false
+        }
+    }
+}

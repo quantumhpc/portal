@@ -1,0 +1,16 @@
+{
+    "fields": {
+    },
+    "parameters": {
+        "mainCommand": "VAR.appBinaries VAR.defaultOps",
+        "default"   : {
+            "defaultOps"        :   "",
+            "useoutputFile"     :   true,
+            "outputFile"        :   "outputFile"
+        },
+        "prologueCommands": [],
+        "options":{
+            "allowWriteScript"  : false
+        }
+    }
+}

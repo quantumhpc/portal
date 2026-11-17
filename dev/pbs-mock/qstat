@@ -1,0 +1,142 @@
+#!/usr/bin/env node
+// Subset of qstat:
+//   qstat -Q              → list queues (header + rows)
+//   qstat -Q <name>       → single queue
+//   qstat -x -f <id>      → full job info
+//   qstat -x -w           → wide job list (default)
+//   qstat -x -w -s -1     → "alt" job list
+import { loadScenario, listJobs, readJob, ensureSeeded, elapsedHms, host, pbsJsonArg, pbsJsonEnvelope } from "../mock-bin/lib.mjs";
+
+const scenario = loadScenario();
+ensureSeeded("pbs", scenario);
+
+const { json, args } = pbsJsonArg("qstat");
+const flags = new Set(args.filter(a => a.startsWith("-")));
+const positional = args.filter(a => !a.startsWith("-"));
+
+const queueCounts = (q) => {
+  const jobs = listJobs("pbs").filter(j => j.queue === q.name);
+  return { total: jobs.length, running: jobs.filter(j => j.state === "R").length,
+    queued: jobs.filter(j => j.state === "Q").length, held: jobs.filter(j => j.state === "H").length };
+};
+
+if (flags.has("-B")) {
+  // Server summary, as `qstat -B` prints it.
+  const jobs = listJobs("pbs");
+  const n = (s) => jobs.filter(j => j.state === s).length;
+  process.stdout.write(
+    "Server             Max   Tot   Que   Run   Hld   Wat   Trn   Ext Status\n" +
+    "---------------- ----- ----- ----- ----- ----- ----- ----- ----- -----------\n" +
+    `mockhost             0 ${String(jobs.length).padStart(5)} ${String(n("Q")).padStart(5)} ${String(n("R")).padStart(5)} ${String(n("H")).padStart(5)}     0     0     0 Active\n`);
+  process.exit(0);
+}
+
+if (flags.has("-Q") && json) {
+  const queues = positional.length ? scenario.queues.filter(q => q.name === positional[0]) : scenario.queues;
+  const out = {};
+  for (const q of queues) {
+    const c = queueCounts(q);
+    out[q.name] = { queue_type: "Execution", total_jobs: c.total,
+      state_count: `Transit:0 Queued:${c.queued} Held:${c.held} Waiting:0 Running:${c.running} Exiting:0 Begun:0 `,
+      enabled: "True", started: "True" };
+  }
+  process.stdout.write(pbsJsonEnvelope("Queue", out, scenario));
+  process.exit(0);
+}
+
+if (flags.has("-Q")) {
+  // Header
+  const header =
+    "Queue              Max   Tot   Ena   Str   Que   Run   Hld   Wat   Trn   Ext   T     Cpt\n" +
+    "----------------- ---- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----";
+  const queues = positional.length
+    ? scenario.queues.filter(q => q.name === positional[0])
+    : scenario.queues;
+  const rows = queues.map(q => {
+    const jobs = listJobs("pbs").filter(j => j.queue === q.name);
+    const running = jobs.filter(j => j.state === "R").length;
+    const queued  = jobs.filter(j => j.state === "Q").length;
+    const held    = jobs.filter(j => j.state === "H").length;
+    return `${q.name.padEnd(17)} 0    ${String(jobs.length).padStart(5)} yes   yes   ${String(queued).padStart(5)} ${String(running).padStart(5)} ${String(held).padStart(5)}     0     0     0   E       0`;
+  });
+  process.stdout.write([header, ...rows, ""].join("\n"));
+  process.exit(0);
+}
+
+if (flags.has("-f")) {
+  // Full-format record for one job. Used both for `qstat -x -f <id>` and, with
+  // no id, for `qstat -x -f` which lists every job (blank-line separated) — the
+  // form lib/hpc/managers.ts jobList() relies on via pbs.qstat(config, 'all').
+  const fullBlock = (j) => [
+    `Job Id: ${j.fullId || j.id}`,
+    `    Job_Name = ${j.name}`,
+    `    Job_Owner = ${j.user}@${host(scenario)}`,
+    `    job_state = ${j.state}`,
+    `    queue = ${j.queue}`,
+    `    server = ${host(scenario)}`,
+    `    Variable_List = PBS_O_WORKDIR=${j.workdir},PBS_O_HOME=/home/${j.user}`,
+    `    Resource_List.walltime = 01:00:00`,
+    `    Resource_List.ncpus = 4`,
+    `    Resource_List.mem = 8gb`,
+    `    Output_Path = ${host(scenario)}:${j.workdir}/${j.name}.out`,
+    `    Error_Path = ${host(scenario)}:${j.workdir}/${j.name}.err`,
+    `    resources_used.walltime = ${elapsedHms(j.startTime)}`,
+  ].join("\n");
+
+  const jobJson = (j) => ({
+    Job_Name: j.name, Job_Owner: `${j.user}@${host(scenario)}`, job_state: j.state, queue: j.queue, server: host(scenario),
+    Variable_List: { PBS_O_WORKDIR: j.workdir, PBS_O_HOME: `/home/${j.user}` },
+    Resource_List: { walltime: "01:00:00", ncpus: 4, mem: "8gb" },
+    Output_Path: `${host(scenario)}:${j.workdir}/${j.name}.out`,
+    Error_Path: `${host(scenario)}:${j.workdir}/${j.name}.err`,
+    resources_used: { walltime: elapsedHms(j.startTime) },
+  });
+
+  if (json) {
+    let jobs = listJobs("pbs");
+    if (positional.length) {
+      const j = readJob("pbs", String(positional[0]).split(".")[0]);
+      if (!j) { process.stderr.write("qstat: Unknown Job Id\n"); process.exit(1); }
+      jobs = [j];
+    }
+    process.stdout.write(pbsJsonEnvelope("Jobs", Object.fromEntries(jobs.map(j => [j.fullId || String(j.id), jobJson(j)])), scenario));
+    process.exit(0);
+  }
+
+  if (positional.length) {
+    const id = String(positional[0]).split(".")[0];
+    const j = readJob("pbs", id);
+    if (!j) {
+      process.stderr.write("qstat: Unknown Job Id\n");
+      process.exit(1);
+    }
+    process.stdout.write(fullBlock(j) + "\n");
+    process.exit(0);
+  }
+
+  // No id → every job in full format (empty output when the queue is empty).
+  const jobs = listJobs("pbs");
+  process.stdout.write(jobs.map(fullBlock).join("\n\n") + (jobs.length ? "\n" : ""));
+  process.exit(0);
+}
+
+// Job list (default `-x -w`).
+const useAlt = flags.has("-s") && positional.includes("-1");
+const jobs = listJobs("pbs");
+if (useAlt) {
+  const header =
+    "Job ID            User      Queue    Job Name      SessID   NDS   TSK   Memory  Time   S   Elapsed Comment\n" +
+    "----------------- --------- -------- ------------- -------- ----- ----- ------- ------ --- ------- -------";
+  const rows = jobs.map(j =>
+    `${(j.fullId || String(j.id)).padEnd(17)} ${j.user.padEnd(9)} ${j.queue.padEnd(8)} ${j.name.padEnd(13)} 12345    1     4     8gb     01:00  ${j.state}   ${elapsedHms(j.startTime)} --`
+  );
+  process.stdout.write([header, ...rows, ""].join("\n"));
+} else {
+  const header =
+    "Job ID            Name             User             Time     Status   Queue\n" +
+    "----------------- ---------------- ---------------- -------- -------- -----";
+  const rows = jobs.map(j =>
+    `${(j.fullId || String(j.id)).padEnd(17)} ${j.name.padEnd(16)} ${j.user.padEnd(16)} ${elapsedHms(j.startTime).padEnd(8)} ${j.state.padEnd(8)} ${j.queue}`
+  );
+  process.stdout.write([header, ...rows, ""].join("\n"));
+}

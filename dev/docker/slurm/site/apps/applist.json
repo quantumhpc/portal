@@ -1,0 +1,10 @@
+{
+  "demo": {
+    "residual_demo": {
+      "name": "Residual demo",
+      "description": "Prints decaying residuals so you can watch a job run on the dev cluster",
+      "tags": ["demo"],
+      "parser": { "source": "recipe", "id": "residual-demo" }
+    }
+  }
+}

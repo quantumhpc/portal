@@ -1,0 +1,316 @@
+{
+    "cfd": {
+        "ansys_fluent": {
+            "remote": true,
+            "name": "ANSYS Fluent",
+            "logo": "/apps/cfd-fluent.png",
+            "description": "Computational Fluid Dynamics",
+            "provide":["ANSYS", "Fluent", "CFD"],
+            "require":["ANSYS"],
+            "licensing" : true,
+            "parser" : {
+                "post": ["outputFile"]
+            }
+        },
+        "ansys_cfx": {
+            "remote": true,
+            "name": "ANSYS CFX",
+            "logo": "/apps/cfd-cfx.png",
+            "description": "Computational Fluid Dynamics",
+            "provide":["ANSYS", "CFX", "CFD"],
+            "require":["ANSYS"],
+            "licensing" : true,
+            "parser" : {
+                "post": ["outputFile"]
+            }
+        },
+        "star-ccm": {
+            "remote": true,
+            "name": "CD-Adapco Star-CCM+",
+            "logo": "/apps/cfd-star.png",
+            "description": "StarCCM+",
+            "provide":["Siemens", "CD-Adapco", "Star-CCM", "CFD"],
+            "require":["Siemens", "CD-Adapco", "Star-CCM"],
+            "licensing" : true,
+            "parser" : {
+                "post": ["outputFile"]
+            }
+        },
+        "lms_sysnoise": {
+            "name": "Sysnoise",
+            "logo": "/apps/virtuallab.png",
+            "description": "LMS VirtualLab",
+            "provide":["Siemens", "LMS", "CFD","VirtualLab"],
+            "require":["LMS", "VirtualLab"],
+            "licensing" : false,
+            "parser" : {
+                "post": ["outputFile"]
+            }
+        },
+        "openfoam": {
+            "name": "OpenFOAM",
+            "logo": "/apps/openfoam.png",
+            "description": "Open-Source CFD",
+            "provide":["OpenFOAM", "CFD","Open-Source"],
+            "require":["OpenFOAM"],
+            "licensing" : false,
+            "parser" : {
+                "post": ["outputFile"]
+            }
+        }
+    },
+    "em": {
+        "ansys_hfss": {
+            "remote": true,
+            "name": "ANSYS HFSS",
+            "logo": "/apps/hfss.png",
+            "description": "ANSYS HFSS",
+            "provide":["ANSYS", "HFSS", "EM"],
+            "require":["ANSYS"],
+            "licensing" : true,
+            "parser" : {}
+        }
+    },
+    "fea": {
+        "altair_optistruct": {
+            "remote": false,
+            "name": "HyperWorks Optistruct",
+            "logo": "/apps/fea-hyperworks.png",
+            "description": "ALTAIR HyperWorks",
+            "provide":["ALTAIR", "Optistruct", "FEA"],
+            "require":["HyperWorks"],
+            "licensing" : true,
+            "parser" : {
+                "post": ["outputFile", "historyFile"]
+            }
+        },
+        "altair_radioss": {
+            "remote": false,
+            "name": "HyperWorks Radioss",
+            "logo": "/apps/fea-hyperworks.png",
+            "description": "ALTAIR HyperWorks",
+            "provide":["ALTAIR", "Radioss", "FEA"],
+            "require":["HyperWorks"],
+            "licensing" : true,
+            "parser" : {
+                "post": ["outputFile"]
+            }
+        },
+        "altair_motionsolve": {
+            "remote": false,
+            "name": "HyperWorks MotionSolve",
+            "logo": "/apps/fea-hyperworks.png",
+            "description": "ALTAIR HyperWorks",
+            "provide":["ALTAIR", "MotionSolve", "FEA"],
+            "require":["HyperWorks"],
+            "licensing" : true,
+            "parser" : {
+                "post": ["outputFile"]
+            }
+        },
+        "ansys_mech": {
+            "remote": false,
+            "name": "ANSYS Mechanical",
+            "logo": "/apps/fea-ansys.png",
+            "description": "Mechanical",
+            "provide":["ANSYS", "Mechanical", "FEA"],
+            "require":["ANSYS"],
+            "licensing" : true,
+            "parser" : {
+                "pre": ["inputFile*"],
+                "post": ["outputFile"]
+            }
+        },
+        "lstc_lsdyna": {
+            "remote": false,
+            "name": "LSTC LS-Dyna",
+            "logo": "/apps/lsprepost.png",
+            "description": "LSTC LS-Dyna",
+            "provide":["LSTC", "LS-Dyna", "ANSYS"],
+            "require":["ANSYS"],
+            "licensing" : true,
+            "parser" : {
+            }
+        },
+        "dassault_abaqus": {
+            "remote": true,
+            "name": "DASSAULT Abaqus",
+            "logo": "/apps/fea-abaqus.png",
+            "description": "Abaqus",
+            "provide":["DASSAULT", "Abaqus", "FEA"],
+            "require":["Abaqus"],
+            "licensing" : true,
+            "parser" : {
+                "pre": ["inputFile*"],
+                "post": ["outputFile"]
+            }
+        },
+        "msc_nastran": {
+            "remote": false,
+            "name": "MSC Nastran",
+            "logo": "/apps/msc-nastran.png",
+            "description": "MSC Nastran",
+            "provide":["MSC", "Nastran"],
+            "require":["MSC"],
+            "licensing" : true,
+            "parser" : {
+            }
+        },
+        "nx_nastran": {
+            "remote": false,
+            "name": "NX Nastran",
+            "logo": "/apps/nx-nastran.png",
+            "description": "NX Nastran",
+            "provide":["NX", "Nastran"],
+            "require":["NX"],
+            "licensing" : true,
+            "parser" : {
+            }
+        },
+        "autodesk_nastran": {
+            "remote": false,
+            "name": "Autodesk Nastran",
+            "logo": "/apps/autodesk-nastran.png",
+            "description": "Autodesk Nastran",
+            "provide":["Autodesk", "Nastran"],
+            "require":["Autodesk"],
+            "licensing" : true,
+            "parser" : {
+            }
+        },
+        "nei_nastran": {
+            "remote": false,
+            "name": "NEI Nastran",
+            "logo": "/apps/nei-nastran.png",
+            "description": "NEI Nastran",
+            "provide":["NEI", "Nastran"],
+            "require":["NEI"],
+            "licensing" : true,
+            "parser" : {
+            }
+        },
+        "simcenter_nastran": {
+            "remote": false,
+            "name": "Simcenter Nastran",
+            "logo": "/apps/simcenter-nastran.png",
+            "description": "Simcenter Nastran",
+            "provide":["Simcenter", "Nastran"],
+            "require":["Simcenter"],
+            "licensing" : true,
+            "parser" : {
+            }
+        }
+    },
+    "framework": {
+        "ansys_workbench": {
+            "nobatch" : false,
+            "remote" : true,
+            "name": "ANSYS Workbench",
+            "logo": "/apps/workbench.png",
+            "description": "Complete ANSYS Suite",
+            "provide":["ANSYS", "Fluent", "CFD", "Mechanical", "FEA"],
+            "require":["ANSYS"],
+            "licensing" : true,
+            "parser" : {
+            }
+        },
+        "ansys_discoverylive": {
+            "nobatch" : true,
+            "remote" : true,
+            "name": "ANSYS Discovery Live",
+            "logo": "/apps/discoverylive.png",
+            "description": "Discovery Live",
+            "provide":["ANSYS", "CFD", "FEA"],
+            "require":["ANSYS"],
+            "licensing" : true,
+            "parser" : {
+            }
+        },
+        "altair_hyperstudy": {
+            "remote": true,
+            "name": "HyperWorks HyperStudy",
+            "logo": "/apps/fea-hyperworks.png",
+            "description": "ALTAIR HyperWorks",
+            "provide":["ALTAIR", "HyperStudy", "Meshing"],
+            "require":["HyperWorks"],
+            "licensing" : true,
+            "parser" : {
+            }
+        }
+    },
+    "prepost": {
+        "altair_hypermesh": {
+            "remote": true,
+            "name": "HyperWorks HyperMesh",
+            "logo": "/apps/fea-hyperworks.png",
+            "description": "ALTAIR HyperWorks",
+            "provide":["ALTAIR", "HyperMesh", "Meshing"],
+            "require":["HyperWorks"],
+            "licensing" : true,
+            "parser" : {
+            }
+        },
+        "altair_hyperview": {
+            "nobatch" : true,
+            "remote": true,
+            "name": "HyperWorks HyperView",
+            "logo": "/apps/fea-hyperworks.png",
+            "description": "ALTAIR HyperWorks",
+            "provide":["ALTAIR", "HyperView", "Meshing"],
+            "require":["HyperWorks"],
+            "licensing" : true,
+            "parser" : {
+            }
+        },
+        "lstc_lsprepost": {
+            "nobatch" : true,
+            "remote": true,
+            "name": "LSTC LS-PrePost",
+            "logo": "/apps/lsprepost.png",
+            "description": "LSTC LS-PREPOST",
+            "provide":["LSTC", "LS-PREPOST"],
+            "require":["LSTC", "LS-PREPOST"],
+            "licensing" : true,
+            "parser" : {
+            }
+        },
+        "paraview": {
+            "nobatch" : true,
+            "remote" : true,
+            "name": "Paraview",
+            "logo": "/apps/paraview.png",
+            "description": "Paraview",
+            "provide":["Paraview"],
+            "require":[],
+            "licensing" : false,
+            "parser" : {
+            }
+        }
+    },
+    "library": {
+        "openmpi": {
+            "remote": false,
+            "name": "OpenMPI",
+            "logo": "/apps/open-mpi.jpg",
+            "description": "OpenMPI",
+            "provide":["OpenMPI", "MPI"],
+            "require":["OpenMPI"],
+            "licensing" : false,
+            "parser" : {
+            }
+        },
+        "tmux": {
+            "remote": false,
+            "name": "Tmux",
+            "terminal": true,
+            "logo": "/apps/open-mpi.jpg",
+            "description": "Tmux",
+            "provide":["tmux", "shell"],
+            "require":["tmux"],
+            "licensing" : false,
+            "parser" : {
+            }
+        }
+        
+    }
+}

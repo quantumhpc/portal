@@ -1,0 +1,212 @@
+#!/usr/bin/env node
+// Mock scontrol — show {partition|nodes|node|job}, hold, release, requeue,
+// suspend, resume, update (JobName/Name, Partition, Priority, TimeLimit).
+import { loadScenario, listJobs, readJob, writeJob, ensureSeeded, elapsedHms, slurmJsonArg, slurmJsonEnvelope, slurmJsonError, slurmJobJson, sNum, hmsToMinutes, slurmVersion } from "../mock-bin/lib.mjs";
+
+const scenario = loadScenario();
+ensureSeeded("slurm", scenario);
+
+const { json, args: argv } = slurmJsonArg("scontrol");
+const [action, ...rest] = argv;
+
+function die(msg) { process.stderr.write(msg + "\n"); process.exit(1); }
+
+function loadJobOrDie(id) {
+  const j = readJob("slurm", String(id || ""));
+  if (!j) die("slurm_update error: Invalid job id specified");
+  return j;
+}
+
+function nodeBlock(node) {
+  const cores = Math.max(1, Math.floor(node.cpuTotal / 2));
+  const load = (node.cpuAlloc / Math.max(node.cpuTotal, 1)).toFixed(2);
+  const features = "avx2,avx512";
+  let gres = "(null)";
+  if (node.gpus?.length) {
+    gres = node.gpus.map(g => `gpu:${g.model}:${g.count}`).join(",");
+  }
+  return [
+    `NodeName=${node.name} Arch=x86_64 CoresPerSocket=${cores} CPUAlloc=${node.cpuAlloc} CPUErr=0 CPUTot=${node.cpuTotal} CPULoad=${load}`,
+    `   AvailableFeatures=${features} ActiveFeatures=${features} Gres=${gres}`,
+    `   NodeAddr=${node.name} NodeHostName=${node.name} Version=${slurmVersion}`,
+    `   OS=Linux 5.14.0 #1 RealMemory=${node.memTotalMb} AllocMem=${node.memAllocMb} FreeMem=${node.memFreeMb} Sockets=2 Boards=1`,
+    `   State=${node.state.slurm} ThreadsPerCore=2 TmpDisk=0 Weight=1 Owner=N/A MCS_label=N/A`,
+    `   Partitions=${node.partitions.join(",")}`,
+  ].join("\n");
+}
+
+function partitionBlock(q) {
+  const nodeList = scenario.nodes.filter(n => n.partitions.includes(q.name)).map(n => n.name).join(",");
+  return [
+    `PartitionName=${q.name} AllowGroups=ALL AllowAccounts=ALL AllowQos=ALL AllocNodes=ALL`,
+    `   Default=${q.default ? "YES" : "NO"} QoS=N/A DefaultTime=01:00:00 DisableRootJobs=NO ExclusiveUser=NO`,
+    `   GraceTime=0 Hidden=NO MaxNodes=UNLIMITED MaxTime=${q.maxTime || "1-00:00:00"} MinNodes=0 LLN=NO`,
+    `   MaxCPUsPerNode=UNLIMITED Nodes=${nodeList} PriorityJobFactor=1 PriorityTier=1`,
+    `   RootOnly=NO ReqResv=NO OverSubscribe=NO State=UP`,
+    `   TotalCPUs=${q.totalCpus ?? 0} TotalNodes=${q.totalNodes ?? 0} SelectTypeParameters=NONE`,
+  ].join("\n");
+}
+
+function nodeJson(node) {
+  return {
+    name: node.name, architecture: "x86_64", version: slurmVersion,
+    state: node.state.slurm.split("+"),
+    cpus: node.cpuTotal, alloc_cpus: node.cpuAlloc,
+    real_memory: node.memTotalMb, alloc_memory: node.memAllocMb, free_mem: sNum(node.memFreeMb),
+    features: ["avx2", "avx512"], active_features: ["avx2", "avx512"],
+    gres: node.gpus?.length ? node.gpus.map(g => `gpu:${g.model}:${g.count}`).join(",") : "",
+    partitions: node.partitions,
+  };
+}
+
+function partitionJson(q) {
+  const nodeList = scenario.nodes.filter(n => n.partitions.includes(q.name)).map(n => n.name).join(",");
+  return {
+    name: q.name,
+    nodes: { configured: nodeList, total: q.totalNodes ?? 0, allowed_allocation: "" },
+    cpus: { total: q.totalCpus ?? 0 },
+    partition: { state: ["UP"] },
+    flags: q.default ? ["DEFAULT"] : [],
+    maximums: { time: sNum(hmsToMinutes(q.maxTime || "1-00:00:00")) },
+    defaults: { time: sNum(60) },
+  };
+}
+
+function jobReason(j) {
+  if (j.held) return "JobHeldUser";
+  return j.state === "PENDING" ? "Resources" : "None";
+}
+
+function jobBlock(j) {
+  const nodelist = j.state === "PENDING" ? "(None)" : "compute01";
+  return [
+    `JobId=${j.id} JobName=${j.name}`,
+    `   UserId=${j.user} GroupId=users JobState=${j.state} Reason=${jobReason(j)} Dependency=(null)`,
+    `   Priority=${j.held ? 0 : (j.priority ?? 100)} QOS=normal Partition=${j.partition}`,
+    `   TimeLimit=${j.timelimit || "01:00:00"} RunTime=${elapsedHms(j.startTime)} SubmitTime=${j.startTime}`,
+    `   StartTime=${j.startTime} EndTime=Unknown`,
+    `   NodeList=${nodelist} BatchHost=compute01 NumNodes=1 NumCPUs=4`,
+    `   TRES=cpu=4,mem=8192M,node=1,billing=4`,
+    `   WorkDir=${j.workdir}`,
+    `   StdErr=${j.workdir}/${j.name}.out StdOut=${j.workdir}/${j.name}.out`,
+    "",
+  ].join("\n");
+}
+
+switch (action) {
+  case "ping": {
+    console.log("Slurmctld(primary) at mockhost is UP");
+    break;
+  }
+  case "show": {
+    const [object, target] = rest;
+    switch (object) {
+      case "partition": {
+        const queues = target ? scenario.queues.filter(q => q.name === target) : scenario.queues;
+        if (target && queues.length === 0) die(`Partition ${target} not found`);
+        if (json) { process.stdout.write(slurmJsonEnvelope("partitions", queues.map(partitionJson))); break; }
+        process.stdout.write(queues.map(partitionBlock).join("\n\n") + "\n");
+        break;
+      }
+      case "node":
+      case "nodes": {
+        const nodes = target ? scenario.nodes.filter(n => n.name === target) : scenario.nodes;
+        if (target && nodes.length === 0) die(`Node ${target} not found`);
+        if (json) { process.stdout.write(slurmJsonEnvelope("nodes", nodes.map(nodeJson))); break; }
+        process.stdout.write(nodes.map(nodeBlock).join("\n\n") + "\n");
+        break;
+      }
+      case "job": {
+        if (json) {
+          const jobs = target ? [readJob("slurm", target)] : listJobs("slurm");
+          if (target && !jobs[0]) slurmJsonError("Invalid job id specified");
+          process.stdout.write(slurmJsonEnvelope("jobs", jobs.map(j => slurmJobJson(j, jobReason(j)))));
+          break;
+        }
+        if (target) {
+          const j = readJob("slurm", target);
+          if (!j) die("slurm_load_jobs error: Invalid job id specified");
+          process.stdout.write(jobBlock(j));
+        } else {
+          process.stdout.write(listJobs("slurm").map(jobBlock).join("\n"));
+        }
+        break;
+      }
+      default:
+        die(`scontrol: unknown object '${object}'`);
+    }
+    break;
+  }
+
+  case "hold": {
+    const j = loadJobOrDie(rest[0]);
+    j.held = true;
+    writeJob("slurm", j);
+    break;
+  }
+
+  case "release": {
+    const j = loadJobOrDie(rest[0]);
+    j.held = false;
+    writeJob("slurm", j);
+    break;
+  }
+
+  case "requeue": {
+    const j = loadJobOrDie(rest[0]);
+    j.state = "PENDING";
+    j.startTime = new Date().toISOString();
+    writeJob("slurm", j);
+    break;
+  }
+
+  case "suspend": {
+    const j = loadJobOrDie(rest[0]);
+    if (j.state !== "RUNNING") die(`scontrol: Job is not running id=${j.id}`);
+    j.state = "SUSPENDED";
+    writeJob("slurm", j);
+    break;
+  }
+
+  case "resume": {
+    const j = loadJobOrDie(rest[0]);
+    if (j.state !== "SUSPENDED") die(`scontrol: Job is not suspended id=${j.id}`);
+    j.state = "RUNNING";
+    writeJob("slurm", j);
+    break;
+  }
+
+  case "update": {
+    // scontrol update JobId=<id> [JobName=x] [Partition=x] [Priority=n] [TimeLimit=t]
+    const kv = {};
+    for (const arg of rest) {
+      const m = arg.match(/^([A-Za-z]+)=(.*)$/);
+      if (!m) die(`scontrol: invalid parameter '${arg}'`);
+      kv[m[1].toLowerCase()] = m[2];
+    }
+    const id = kv.jobid;
+    if (!id) die("scontrol: JobId must be specified");
+    const j = loadJobOrDie(id);
+    for (const [key, value] of Object.entries(kv)) {
+      switch (key) {
+        case "jobid": break;
+        case "jobname":
+        case "name": j.name = value; break;
+        case "partition": {
+          if (!scenario.queues.some(q => q.name === value)) {
+            die("slurm_update error: Invalid partition name specified");
+          }
+          j.partition = value; j.queue = value; break;
+        }
+        case "priority": j.priority = Number(value); break;
+        case "timelimit": j.timelimit = value; break;
+        default: die(`scontrol: invalid parameter '${key}=${value}'`);
+      }
+    }
+    writeJob("slurm", j);
+    break;
+  }
+
+  default:
+    die(`scontrol: invalid action '${action || ""}'`);
+}

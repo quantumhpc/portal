@@ -1,0 +1,9 @@
+{
+  "name": "empty",
+  "description": "No nodes, no queues, no jobs. Tests empty-state UIs.",
+  "host": "mockhost",
+  "nodes": [],
+  "queues": [],
+  "licenseServers": [],
+  "preSeededJobs": []
+}

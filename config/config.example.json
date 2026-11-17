@@ -1,0 +1,161 @@
+// -*- mode: jsonc -*-
+// QuantumHPC Portal — main configuration
+//
+// Copy this file to config.json in the portal config directory
+// ($QHPC_CONFIG_DIR, default ./config) and adapt it to your site.
+// Comments are allowed. Admins can also edit it from Admin → Configuration
+// (that rewrites the file without comments). Restart the portal to apply.
+{
+
+  /***********************************************************************
+   * Auth
+   ***********************************************************************/
+
+  // Authenticate users against the system PAM stack. Keep this true on any
+  // real system: when false, ANY password is accepted for an existing user.
+  // Env override: USE_PAM=true|false
+  "use_pam": true,
+
+  // PAM service name. The installer ships /etc/pam.d/qhpc-portal; otherwise
+  // use an existing service such as "login", "system-auth" or "sshd".
+  "pam_module": "qhpc-portal",
+
+  // OS usernames granted portal admin rights on first login.
+  // Env override: ADMIN_USERS=alice,bob
+  "admin_users": [],
+
+
+  /***********************************************************************
+   * HPC scheduler
+   ***********************************************************************/
+
+  // Active scheduler — must match a key in "managers": "slurm" | "pbs"
+  // Env override: HPC_MANAGER
+  "manager": "slurm",
+
+  // Request memory from the scheduler (GB per core by default)
+  // "memory": true,
+  // "memory_default": "2",
+
+  // Only the block matching "manager" is used.
+  "managers": {
+
+    "slurm": {
+      // "local": the portal runs on a login/head node and calls the scheduler
+      //          binaries directly, as the logged-in user (uid/gid switch).
+      // "ssh":   the portal calls the scheduler over SSH on serverName.
+      "method":       "local",
+
+      // Directory that contains sbatch/squeue/scontrol/scancel
+      "binariesDir":  "/usr/bin/",
+
+      // Where job directories are created (must be visible to compute nodes)
+      "workingDir":   "/scratch",
+
+      "localShell":   "/bin/bash",
+      "localCopy":    "/bin/cp",
+      "useAlternate": false,
+
+      // SSH method only:
+      // "serverName":      "slurm-head.example.org",
+      // "sshExec":         "/usr/bin/ssh",
+      // "scpExec":         "/usr/bin/scp",
+      // "defaultOpts":     "-o BatchMode=yes",
+      // "secretAccessKey": "/etc/qhpc-portal/ssh/id_ed25519",
+      // When workingDir is also mounted on the portal host under another path:
+      // "useSharedDir":    true,
+      // "sharedDir":       "/mnt/scratch",
+
+      // Fields injected into the per-user HPC environment
+      "userParams":   ["username", "uid", "gid"]
+    },
+
+    "pbs": {
+      "method":       "local",
+      "binariesDir":  "/opt/pbs/bin/",
+      "workingDir":   "/scratch",
+      "localShell":   "/bin/bash",
+      "localCopy":    "/bin/cp",
+      "useAlternate": false,
+      "userParams":   ["username", "uid", "gid"]
+    }
+  },
+
+
+  /***********************************************************************
+   * Remote desktop / interactive sessions
+   ***********************************************************************/
+
+  // "turbovnc" | "tigervnc" | "virtualgl" (see apps/remotelist.json)
+  "remote": "turbovnc",
+
+  // "none" | "otp"
+  "remote_security": "none",
+
+  // Domain translation applied to compute-node hostnames:
+  //   ".localdomain=.example.org"  — replace domain
+  //   ".example.org"               — append domain
+  "remote_domain": ".localdomain",
+
+
+  /***********************************************************************
+   * Software license servers (optional, for the License Usage page)
+   ***********************************************************************/
+
+  // Each entry: { "type": "flexlm" | "rlm" | "lmx", "url": [port, host] }
+  // The vendor status utilities (lmutil, rlmutil, lmxendutil) are not
+  // distributed with the portal: place them in ./binaries/ or edit
+  // config/managers/<type>_config.json to point at your copies.
+  "lic_servers": {
+    // "ansys":  { "type": "flexlm", "url": ["1055", "licserver.example.org"] },
+    // "altair": { "type": "lmx",    "url": ["6200", "licserver.example.org"] }
+  },
+
+
+  /***********************************************************************
+   * Filesystem
+   ***********************************************************************/
+
+  // Scratch for uploads and generated job scripts; blank = OS temp dir
+  "tmpdir": "/var/lib/qhpc-portal/tmp",
+
+  // Largest single upload, in GB. Partial uploads live in tmpdir until done.
+  "upload_max_size_gb": 50,
+
+
+  // Browser remote desktops (noVNC). The portal writes one "<token>: host:port"
+  // file per session into vnc_token_dir (blank = <tmpdir>/vnc-tokens) for
+  // websockify's TokenFile plugin; the browser connects to vnc_websocket_url
+  // (same origin, proxied to websockify). See docs/remote-desktop.md.
+  "vnc_websocket_url": "/vnc-ws",
+  "vnc_token_dir": "",
+  "vnc_token_ttl_hours": 12,
+
+
+  /***********************************************************************
+   * Database
+   ***********************************************************************/
+
+  // The database only stores portal metadata (users' admin flags, job
+  // records, preferences) — authentication always goes through PAM.
+  //
+  // SQLite (simplest; fine for a single portal instance):
+  //   "file" — path to the database file (relative to the portal directory)
+  //   Env overrides: DB_DRIVER=sqlite, SQLITE_FILE
+  //
+  // MongoDB:
+  //   hostname, port, database, user, password
+  //   Env overrides: DB_DRIVER=mongo, MONGODB_HOST, MONGODB_PORT, MONGODB_DATABASE
+  "db": {
+    "driver": "sqlite",
+    "file":   "/var/lib/qhpc-portal/qhpc.sqlite"
+
+    // "driver":   "mongo",
+    // "hostname": "localhost",
+    // "port":     27017,
+    // "database": "quanta",
+    // "user":     "",
+    // "password": ""
+  }
+
+}

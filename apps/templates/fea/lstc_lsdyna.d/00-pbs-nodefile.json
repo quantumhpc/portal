@@ -1,0 +1,11 @@
+{
+    "parameters": {
+        "default"   : {
+            "defaultOps+"    :   ""
+        },
+        "prologueCommands+": [
+            "#Parse the nodefile to insert it inside Mechanical",
+            "machines=`uniq -c ${PBS_NODEFILE} | awk '{print $2 \":\" $1}' | paste -s -d ':'`"
+        ]
+    }
+}

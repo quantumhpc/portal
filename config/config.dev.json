@@ -1,0 +1,53 @@
+// -*- mode: jsonc -*-
+// Development configuration — copied to config/config.json by
+// dev/start-dev.sh when no config.json exists. Uses the mock schedulers in
+// dev/ and the mock license-server outputs in dev/lic-mock/.
+// NEVER use this on a real system: use_pam is off.
+{
+  "use_pam": false,
+  "admin_users": [],
+  "manager": "slurm",
+
+  "managers": {
+    "slurm": {
+      "method":       "local",
+      "binariesDir":  "dev/slurm-mock/",
+      "localShell":   "/bin/bash",
+      "localCopy":    "/bin/cp",
+      "useAlternate": false,
+      "useSharedDir": false,
+      "sharedDir":    "/tmp/qhpc-dev-jobs",
+      "workingDir":   "/tmp/qhpc-dev-jobs",
+      "userParams":   ["username", "uid", "gid"]
+    },
+    "pbs": {
+      "method":       "local",
+      "binariesDir":  "dev/pbs-mock/",
+      "localShell":   "/bin/bash",
+      "localCopy":    "/bin/cp",
+      "useAlternate": false,
+      "useSharedDir": false,
+      "sharedDir":    "/tmp/qhpc-dev-jobs",
+      "workingDir":   "/tmp/qhpc-dev-jobs",
+      "userParams":   ["username", "uid", "gid"]
+    }
+  },
+
+  "remote": "turbovnc",
+  "remote_security": "none",
+  "remote_domain": ".localdomain",
+
+  "lic_servers": {
+    "ansys":      { "type": "flexlm", "url": ["test", "./dev/lic-mock/flex/ansys.output"] },
+    "cdadapco":   { "type": "flexlm", "url": ["test", "./dev/lic-mock/flex/star.output"]  },
+    "virtuallab": { "type": "rlm",    "url": ["test", "./dev/lic-mock/rlm/virtuallab.out"] },
+    "altair":     { "type": "lmx",    "url": ["test", "./dev/lic-mock/lmx/altair.out"]     }
+  },
+
+  "tmpdir": "/tmp",
+
+  "db": {
+    "driver": "sqlite",
+    "file":   "dev/qhpc.sqlite"
+  }
+}

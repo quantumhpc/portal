@@ -1,0 +1,72 @@
+{
+    "format": "qhpc-app/1",
+    "domain": "demo",
+    "app": "residual_demo",
+    "meta": {
+        "name": "Residual demo",
+        "description": "Prints decaying residuals so you can watch a job run on the dev cluster",
+        "tags": [
+            "demo"
+        ],
+        "parser": {
+            "source": "recipe",
+            "id": "residual-demo"
+        }
+    },
+    "form": {
+        "fields": {
+            "iterations": {
+                "type": "textField",
+                "label": "Iterations",
+                "caption": "Number of time steps to print",
+                "required": true
+            },
+            "delay": {
+                "type": "textField",
+                "label": "Seconds per iteration",
+                "required": true
+            }
+        },
+        "parameters": {
+            "appBinaries": {
+                "v1": "/opt/qhpc-demo/residual-demo.sh"
+            },
+            "mainCommand": "bash VAR.appBinaries VAR.iterations VAR.delay (> VAR.outputFile 2>&1)",
+            "default": {
+                "iterations": "60",
+                "delay": "1",
+                "useinputFile": false
+            }
+        }
+    },
+    "recipe": {
+        "file": "outputFile",
+        "logScale": true,
+        "iteration": {
+            "pattern": "^Time = ([0-9.]+)"
+        },
+        "series": [
+            {
+                "pattern": "Solving for (\\w+), Initial residual = ([0-9.eE+-]+)",
+                "label": "$1",
+                "value": 2,
+                "firstPerIteration": true
+            }
+        ],
+        "outputs": [
+            {
+                "label": "Run time (s)",
+                "pattern": "^ExecutionTime = ([0-9.]+)",
+                "type": "Number"
+            },
+            {
+                "label": "Node",
+                "pattern": "^Residual demo on (\\S+)",
+                "type": "Text"
+            }
+        ],
+        "end": {
+            "success": "^End$"
+        }
+    }
+}

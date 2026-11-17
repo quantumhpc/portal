@@ -1,0 +1,57 @@
+name: Bug report
+description: Something doesn't work as expected
+labels: [bug, triage]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting! **Security issues must not be reported here.** See SECURITY.md.
+        Remove hostnames, usernames and secrets you don't want to share from logs.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What you did, what you expected, and what happened instead.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Go to …
+        2. Submit …
+        3. See error …
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Portal version or commit
+      placeholder: v1.0.0 / abc1234
+    validations:
+      required: true
+  - type: dropdown
+    id: scheduler
+    attributes:
+      label: Scheduler
+      options: [Slurm, PBS Pro / OpenPBS, Dev mock, Other]
+    validations:
+      required: true
+  - type: dropdown
+    id: method
+    attributes:
+      label: Execution method
+      options: [local, ssh, n/a]
+  - type: input
+    id: env
+    attributes:
+      label: Environment
+      description: OS / distro, Node.js version, browser, database (SQLite/MongoDB)
+      placeholder: Rocky 9.4, Node 22.11, Firefox 131, SQLite
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs
+      description: Output of `journalctl -u qhpc-portal` or the browser console.
+      render: shell

@@ -1,0 +1,8 @@
+node_modules
+.next
+.git
+/tmp
+dev/start-dev.sh
+dev/qhpc.sqlite*
+config/config.json
+.env*

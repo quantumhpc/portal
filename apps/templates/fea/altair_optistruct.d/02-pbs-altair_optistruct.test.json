@@ -1,0 +1,7 @@
+{
+    "parameters": {
+        "appBinaries": {
+            "detect": "/workspace/test/altair/*/opti"
+        }
+    }
+}

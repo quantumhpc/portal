@@ -1,0 +1,65 @@
+{
+    "fields": {
+        "mpi": {
+            "type": "radioButtons",
+            "label":  "MPI Mode",
+            "radios": {
+                "platformmpi":{
+                    "caption"   :  "IBM Platform-MPI",
+                    "value"     :  "pl"
+                },
+                "intelmpi":{
+                    "caption"   :  "Intel MPI",
+                    "value"     :  "i"
+                }
+            },
+            "required"          :  true
+        },
+        "runmode": {
+            "type"              : "radioButtons",
+            "label"             :  "Run mode",
+            "radios": {
+                "both":{
+                    "caption"   :  "Starter run followed by a number of Engine runs",
+                    "value"     :  "-both"
+                },
+                "onestep":{
+                    "caption"   :  "Run only Starter",
+                    "value"     :  "-onestep"
+                }
+            },
+            "required"          :  true
+        },
+        "sp": {
+            "type"              : "checkbox",
+            "label"             :  "Single Precision",
+            "caption"           :  "Run the single precision version",
+            "value": {
+                "true"          :   "-sp",
+                "false"         :   ""
+            },
+            "required"          :  false
+        }
+    },
+    "parameters": {
+        "appBinaries": {
+            "detect": "radioss"
+        },
+        "mainCommand": "VAR.appBinaries (\"VAR.inputFileName\") VAR.defaultOps -np VAR.numProcs (-nt VAR.numThreads) -mpi VAR.mpi VAR.runmode VAR.sp",
+        "default"   : {
+            "defaultOps"    :   "",
+            "mpi"           :   "pl",
+            "runmode"       :   "-both",
+            "sp"            :   "",
+            "outputFile"    :   "output"
+        },
+        "prologueCommands": [],
+        "options":{
+            "allowWriteScript"  : false,
+            "hybridMPI"         : true
+        }
+    },
+    "force": {
+        "outputFile="        :   "VAR.outputFile.out"
+    }
+}

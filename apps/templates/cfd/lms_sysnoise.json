@@ -1,0 +1,18 @@
+{
+    "fields": {
+    },
+    "parameters": {
+        "mainCommand": "VAR.appBinaries VAR.defaultOps",
+        "default"   : {
+            "defaultOps"    :   "",
+            "outputFile"    :   "output.log"
+        },
+        "prologueCommands": [
+            "(export OMP_NUM_THREADS=VAR.numThreads)"
+        ],
+        "options":{
+            "allowWriteScript"  : false,
+            "hybridMPI"         : true
+        }
+    }
+}

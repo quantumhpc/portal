@@ -1,0 +1,22 @@
+{
+    "fields": {
+        "licServer": {
+            "type"              : "checkbox",
+            "label"             :  "Serveur secondaire",
+            "caption"           :  "Utiliser le serveur de licences sur cavlvlm03",
+            "value": {
+                "true"          :   "true",
+                "false"         :   "false"
+            },
+            "required"          :  false
+        }
+    },
+    "parameters": {
+        "default"   : {
+            "licServer"     :   false
+        },
+        "prologueCommands+"  :   [
+            "(VAR.licServer)"    
+        ]
+    }
+}

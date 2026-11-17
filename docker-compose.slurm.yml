@@ -1,0 +1,173 @@
+# Dev environment: a real Slurm cluster in containers, with the portal on the
+# same network running `next dev` on the bind-mounted source.
+#
+#   dev/slurm-cluster.sh up      # build, start, wait, print the URL and logins
+#   dev/slurm-cluster.sh test    # smoke test: PAM login, submit, monitor
+#
+# Slurm services adapted from giovtorres/slurm-docker-cluster
+# (https://github.com/giovtorres/slurm-docker-cluster, MIT License,
+# Copyright (c) 2024 Giovanni Torres). Not included from upstream:
+# slurmrestd, GPU workers, Open OnDemand, Elasticsearch/Kibana, Lmod/Spack.
+name: qhpc-slurm
+
+x-slurm-image: &slurm-image
+  image: localhost/qhpc/slurm-dev:${SLURM_IMAGE_TAG:-26.05.5-3.0.2}
+
+services:
+  mysql:
+    image: docker.io/library/mariadb:12
+    hostname: mysql
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+      MYSQL_DATABASE: slurm_acct_db
+      MYSQL_USER: slurm
+      MYSQL_PASSWORD: password
+    volumes:
+      - var_lib_mysql:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  slurmdbd:
+    <<: *slurm-image
+    build:
+      context: .
+      dockerfile: dev/docker/slurm/Dockerfile
+      args:
+        SLURM_IMAGE: docker.io/giovtorres/slurm-docker-cluster:${SLURM_IMAGE_TAG:-26.05.5-3.0.2}
+        WITH_OPENFOAM: ${WITH_OPENFOAM:-0}
+    init: true
+    command: ["slurmdbd"]
+    hostname: slurmdbd
+    environment:
+      MYSQL_USER: slurm
+      MYSQL_PASSWORD: password
+    volumes:
+      - etc_munge:/etc/munge
+      - etc_slurm:/etc/slurm
+      - var_log_slurm:/var/log/slurm
+    depends_on:
+      mysql:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "pidof slurmdbd"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+  slurmctld:
+    <<: *slurm-image
+    init: true
+    command: ["slurmctld"]
+    hostname: slurmctld
+    privileged: true
+    volumes:
+      # Controller state (next job id, queue): without it job ids restart at 1
+      # after `down`, clashing with accounting and the portal's job records.
+      - slurmctld_state:/var/lib/slurm
+      - etc_munge:/etc/munge
+      - etc_slurm:/etc/slurm
+      - var_log_slurm:/var/log/slurm
+      - home:/home
+      - scratch:/scratch
+    depends_on:
+      slurmdbd:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "scontrol ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+  cpu-worker:
+    <<: *slurm-image
+    init: true
+    command: ["slurmd-cpu"]
+    working_dir: /scratch
+    privileged: true
+    # A worker names itself from its own DNS entry, which podman may not have
+    # registered yet on first start; the entrypoint then exits and a restart fixes it.
+    restart: on-failure
+    environment:
+      # Workers name themselves c1, c2… from their compose container names.
+      COMPOSE_PROJECT_NAME: qhpc-slurm
+    volumes:
+      - etc_munge:/etc/munge
+      - etc_slurm:/etc/slurm
+      - var_log_slurm:/var/log/slurm
+      - home:/home
+      - scratch:/scratch
+    depends_on:
+      slurmctld:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "pidof slurmd"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    deploy:
+      replicas: ${CPU_WORKER_COUNT:-2}
+
+  portal:
+    <<: *slurm-image
+    hostname: portal
+    entrypoint: ["/usr/local/bin/portal-entrypoint.sh"]
+    working_dir: /app
+    ports:
+      # Not 3000, so a `npm run dev` on the host can run at the same time.
+      - "${PORTAL_PORT:-3080}:3000"
+    environment:
+      QHPC_CONFIG_DIR: /etc/qhpc-portal
+      NODE_ENV: development
+      NEXT_TELEMETRY_DISABLED: "1"
+      NEXTAUTH_URL: http://localhost:${PORTAL_PORT:-3080}
+      NEXTAUTH_SECRET: qhpc-slurm-dev-secret-not-for-production
+      # Set explicitly so the host's .env.local (bind-mounted with the source) has no effect.
+      HPC_MANAGER: slurm
+      USE_PAM: ${USE_PAM:-true}
+      ADMIN_USERS: alice
+      DB_DRIVER: sqlite
+      SQLITE_FILE: /var/lib/qhpc/qhpc.sqlite
+      # Bind mounts don't always deliver file events into containers; poll instead.
+      WATCHPACK_POLLING: "true"
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+      - next_cache:/app/.next
+      - portal_config:/etc/qhpc-portal
+      - portal_data:/var/lib/qhpc
+      - etc_munge:/etc/munge
+      - etc_slurm:/etc/slurm
+      - home:/home
+      - scratch:/scratch
+    # Lets SELinux hosts (Fedora, RHEL) read the bind-mounted repo without relabelling it.
+    security_opt:
+      - label=disable
+    depends_on:
+      slurmctld:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:3000/api/auth/csrf >/dev/null"]
+      interval: 10s
+      timeout: 10s
+      retries: 60
+      start_period: 120s
+
+volumes:
+  slurmctld_state:
+  etc_munge:
+  etc_slurm:
+  var_lib_mysql:
+  var_log_slurm:
+  home:
+  scratch:
+  node_modules:
+  next_cache:
+  portal_config:
+  portal_data:

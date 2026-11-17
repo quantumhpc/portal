@@ -1,0 +1,24 @@
+{
+    "fields": {
+    },
+    "parameters": {
+        "appBinaries": {
+            "default": "tmux"
+        },
+        "mainCommand": "VAR.appBinaries VAR.defaultOps new-session -d -s VAR.jobName",
+        "default"   : {
+            "defaultOps"        :   "-S $TMUX_SOCKET",
+            "useinputFile"      :   false,
+            "useoutputFile"     :   false
+        },
+        "epilogueCommands": [
+            "# determine the process id of the tmux server",
+            "pid=$( /bin/ps x | /bin/grep -i '[t]mux new-session -d -s VAR.jobName' | sed 's/^\\ *//' | cut -f 1 -d ' ' )",
+            "[ -z \"$pid\" ] && echo \"Error while starting tmux\" && exit 1",
+            "while [ -e /proc/${pid} ]; do sleep 5; done"
+        ],
+        "options":{
+            "allowWriteScript"  : false
+        }
+    }
+}

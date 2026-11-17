@@ -1,0 +1,37 @@
+// Portal config for the demo image (deploy/demo/Dockerfile).
+// Mock Slurm and mock license servers. PAM is off (USE_PAM=false):
+// NEVER use this on a real system.
+{
+  "use_pam": false,
+  "admin_users": ["demo"],
+  "manager": "slurm",
+
+  "managers": {
+    "slurm": {
+      "method":      "local",
+      "binariesDir": "dev/slurm-mock/",
+      "localShell":  "/bin/bash",
+      "localCopy":   "/bin/cp",
+      "workingDir":  "/scratch",
+      "sharedDir":   "/scratch",
+      "userParams":  ["username", "uid", "gid"]
+    }
+  },
+
+  "remote": "turbovnc",
+  "remote_security": "none",
+
+  "lic_servers": {
+    "ansys":      { "type": "flexlm", "url": ["test", "./dev/lic-mock/flex/ansys.output"] },
+    "cdadapco":   { "type": "flexlm", "url": ["test", "./dev/lic-mock/flex/star.output"] },
+    "virtuallab": { "type": "rlm",    "url": ["test", "./dev/lic-mock/rlm/virtuallab.out"] },
+    "altair":     { "type": "lmx",    "url": ["test", "./dev/lic-mock/lmx/altair.out"] }
+  },
+
+  "tmpdir": "/var/lib/qhpc/tmp",
+
+  "db": {
+    "driver": "sqlite",
+    "file":   "/var/lib/qhpc/qhpc.sqlite"
+  }
+}

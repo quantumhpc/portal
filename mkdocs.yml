@@ -1,0 +1,30 @@
+site_name: QuantumHPC Portal
+site_description: Open-source web portal for Slurm and PBS clusters
+repo_url: https://github.com/quantumhpc/portal
+edit_uri: edit/main/docs/
+theme:
+  name: material
+  features:
+    - content.code.copy
+    - navigation.instant
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle: { icon: material/brightness-7, name: Dark mode }
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle: { icon: material/brightness-4, name: Light mode }
+nav:
+  - Home: index.md
+  - Install: INSTALL.md
+  - Add an application: ADD-AN-APP.md
+  - Parsers: PARSERS.md
+  - Configuration: CONFIGURATION.md
+  - Remote desktop: remote-desktop.md
+  - Architecture: ARCHITECTURE.md
+markdown_extensions:
+  - admonition
+  - tables
+  - toc: { permalink: true }
+  - pymdownx.superfences
+  - pymdownx.highlight

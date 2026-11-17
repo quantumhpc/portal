@@ -1,0 +1,7 @@
+{
+    "parameters": {
+        "appBinaries": {
+            "vdefault": "starccm+"
+        }
+    }
+}

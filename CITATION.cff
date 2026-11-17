@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+message: "If you use QuantumHPC Portal in your work, please cite it as below."
+title: "QuantumHPC Portal"
+abstract: "An open-source web portal for HPC clusters: submit and monitor Slurm or PBS jobs, manage files, launch remote desktops and watch license usage from the browser."
+type: software
+authors:
+  - family-names: Lux
+    given-names: Quentin
+license: MIT
+repository-code: "https://github.com/quantumhpc/portal"
+url: "https://quantumhpc.github.io/portal/"
+keywords: [hpc, slurm, pbs, portal, research-computing]

@@ -1,0 +1,7 @@
+{
+    "parameters": {
+        "appBinaries": {
+            "detect": "/workspace/test/ansys_inc/*/fluent/bin/fluent"
+        }
+    }
+}

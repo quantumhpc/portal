@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" role="img" aria-label="QuantumHPC Portal">
+<!-- QuantumHPC Portal favicon. Original artwork, MIT licence.
+     Pixel-snapped redraw of the icon for 16 px: 3 px nodes on whole-pixel positions.
+     Switches blue/white with the browser colour scheme. -->
+  <title>QuantumHPC Portal</title>
+  <style>
+    .m { fill: #1E3A8A; } .a { fill: #0891B2; }
+    @media (prefers-color-scheme: dark) { .m { fill: #FFFFFF; } }
+  </style>
+  <g class="m">
+    <rect x="4" y="0" width="3" height="3" rx="0.5"/>
+    <rect x="9" y="0" width="3" height="3" rx="0.5"/>
+    <rect x="0" y="4" width="3" height="3" rx="0.5"/>
+    <rect x="13" y="4" width="3" height="3" rx="0.5"/>
+    <rect x="0" y="9" width="3" height="3" rx="0.5"/>
+    <rect x="13" y="9" width="3" height="3" rx="0.5"/>
+    <rect x="4" y="13" width="3" height="3" rx="0.5"/>
+    <rect x="9" y="13" width="3" height="3" rx="0.5"/>
+  </g>
+  <rect class="a" x="13" y="13" width="3" height="3" rx="0.5"/>
+</svg>

@@ -1,0 +1,95 @@
+{
+    "fields": {
+        "runMode": {
+            "type": "radioButtons",
+            "label":  "Run Mode",
+            "radios": {
+                "batch":{
+                    "caption"   :  "Batch",
+                    "value"     :  "-batch"
+                },
+                "server":{
+                    "caption"   :  "Server",
+                    "value"     :  "-server",
+                    "clear"     :  "batchmode"
+                }
+            },
+            "required"          :  "[ remote ? false : true ]",
+            "disabled"          :  "[ remote ? true :  false ]"
+        },
+        "batchmode": {
+            "type": "checkBoxes",
+            "label":  "Run type",
+            "checks": {
+                "mesh":{
+                    "caption"   :  "Mesh",
+                    "value"     :  "mesh"
+                },
+                "run":{
+                    "caption"   :  "Run until convergence criteria",
+                    "value"     :  "run"
+                },
+                "step":{
+                    "caption"   :  "Step",
+                    "value"     :  "step"
+                }
+            },
+            "disabled"          :  "runMode!='-batch'",
+            "required"          :  false
+        },
+        "collab": {
+            "type"              : "checkbox",
+            "label"             :  "Enable collaboration",
+            "caption"           :  "(Use if the linux user is different from the Client user)",
+            "value": {
+                "true"          :   "-collab",
+                "false"         :   ""
+            },
+            "required"          :  false
+        },
+        "powerSession": {
+            "type"              : "checkbox",
+            "label"             :  "Power Session",
+            "caption"           :  "Use -power",
+            "value": {
+                "true"          :   "-power",
+                "false"         :   ""
+            },
+            "required"          :  false
+        },
+        "pod": {
+            "type"              : "textField",
+            "label"             :  "Power-on-Demand",
+            "caption"           :  "Use a POD key",
+            "checkbox"          :  true,
+            "required"          :  false
+        },
+        "licensePath": {
+            "type"              : "textField",
+            "label"             :  "License Path",
+            "caption"           :  "Override license server address",
+            "checkbox"          :  true,
+            "required"          :  false
+        }
+    },
+    "parameters": {
+        "appBinaries": {
+        },
+        "mainCommand": "VAR.appBinaries [batch? [VAR.runMode]] (VAR.batchmode) VAR.defaultOps -np VAR.numProcs VAR.collab VAR.powerSession (-power -pod VAR.pod) (-port VAR.portNb) (-licpath VAR.licensePath) (\"VAR.inputFileName\") [batch ? [(> VAR.outputFile 2>&1)]]",
+        "default"   : {
+            "runMode"       :   "[batch ? [-batch]]",
+            "batchmode"     :   "",
+            "defaultOps"    :   "",
+            "collab"        :   "-collab",
+            "licensePath"   :   "",
+            "powerSession"  :   "",
+            "outputFile"    :   "output.log"
+        },
+        "prologueCommands": [
+            "#batchsystem is managing the node file"
+        ],
+        "options":{
+            "allowWriteScript"  : false
+        }
+    }
+}

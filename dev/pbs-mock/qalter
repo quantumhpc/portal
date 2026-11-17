@@ -1,0 +1,9 @@
+#!/usr/bin/env node
+import { readJob, writeJob, parseArgs } from "../mock-bin/lib.mjs";
+const { opts, positional } = parseArgs(process.argv.slice(2));
+const id = String(positional[0] || "").split(".")[0];
+const j = readJob("pbs", id);
+if (!j) { process.stderr.write(`qalter: unknown job ${id}\n`); process.exit(1); }
+if (opts.N) j.name = opts.N;
+if (opts.p) j.priority = Number(opts.p);
+writeJob("pbs", j);

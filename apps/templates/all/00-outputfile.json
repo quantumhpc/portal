@@ -1,0 +1,7 @@
+{
+    "parameters": {
+        "default"   : {
+            "outputFile"    :   "output.log"
+        }
+    }
+}

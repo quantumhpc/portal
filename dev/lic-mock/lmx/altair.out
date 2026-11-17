@@ -1,0 +1,29 @@
+LM-X End-user Utility v4.9.16
+Copyright (C) 2002-2023 X-Formation. All rights reserved.
+
+Server license information:
+        Server: 6200@licsrv-altair
+        Server version: v4.9.16
+        Uptime: 12 day(s) 03 hour(s) 44 min(s)
+
+Feature: HWAIFEM Version: 14.0 Vendor: ALTAIR
+Start date: 2024-01-01 Expire date: 2030-12-31
+Key type: EXCLUSIVE License sharing: CUSTOM VIRTUAL HOST
+Floating license
+25 of 100 license(s) used:
+    5 license(s) used by jdoe@node12 [10.0.0.12]
+      Login time: 2026-05-26 09:30 Checkout time: 2026-05-26 09:31  Shared on custom string: jdoe
+    20 license(s) used by asmith@node07 [10.0.0.7]
+      Login time: 2026-05-26 08:40 Checkout time: 2026-05-26 08:41  Shared on custom string: asmith
+0 denial(s) in last 168 hours
+
+Feature: HWU Version: 14.0 Vendor: ALTAIR
+Start date: 2024-01-01 Expire date: 2030-12-31
+Key type: EXCLUSIVE License sharing: CUSTOM VIRTUAL HOST
+Floating license
+1300 of 5000 license(s) used:
+    800 license(s) used by jdoe@node12 [10.0.0.12]
+      Login time: 2026-05-26 09:30 Checkout time: 2026-05-26 09:31  Shared on custom string: jdoe
+    500 license(s) used by bwayne@node33 [10.0.0.33]
+      Login time: 2026-05-26 07:58 Checkout time: 2026-05-26 07:59  Shared on custom string: bwayne
+3 denial(s) in last 168 hours
